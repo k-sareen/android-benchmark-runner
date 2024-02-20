@@ -36,7 +36,13 @@ public class TwitterScrollTest extends Benchmark {
                 Log.i(LOG_TAG, "Main page did not load in time");
                 return false;
             }
-            Thread.sleep(1000);
+
+            UiObject2 followingFeed = device.wait(Until.findObject(By.text("Following")), 5000);
+            if (followingFeed == null) {
+                Log.i(LOG_TAG, "Following feed not found");
+                return false;
+            }
+            followingFeed.click();
 
             UiObject2 homeButton = device.wait(Until.findObject(
                     By.clazz("android.widget.LinearLayout")
@@ -49,7 +55,7 @@ public class TwitterScrollTest extends Benchmark {
 
             homeButton.click();
             device.waitForIdle();
-            Thread.sleep(2500);
+            Thread.sleep(1500);
 
             found = device.wait(Until.hasObject(By.res(POST)), 6000);
             if (!found) {
@@ -60,14 +66,14 @@ public class TwitterScrollTest extends Benchmark {
             device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
                     deviceWidth / 2, 30 * deviceHeight / 100, 25);
             device.waitForIdle();
-            Thread.sleep(750);
+            Thread.sleep(500);
 
             found = device.wait(Until.hasObject(By.res(MUTE_BUTTON)), 2000);
             if (found) {
-                Thread.sleep(750);
+                Thread.sleep(250);
                 UiObject2 muteButton = device.findObject(By.res(MUTE_BUTTON));
                 muteButton.click();
-                Thread.sleep(750);
+                Thread.sleep(500);
                 muteButtonFound = true;
             }
 
@@ -76,30 +82,6 @@ public class TwitterScrollTest extends Benchmark {
                 if (!found) {
                     return false;
                 }
-            }
-
-            device.swipe(deviceWidth / 2, 40 * deviceHeight / 100,
-                    deviceWidth / 2, 70 * deviceHeight / 100, 50);
-            device.waitForIdle();
-            Thread.sleep(750);
-
-            homeButton = device.wait(Until.findObject(
-                    By.clazz("android.widget.LinearLayout")
-                            .desc(Pattern.compile(HOME_BUTTON))), 5000);
-            if (homeButton == null) {
-                Log.i(LOG_TAG, "Home button not found");
-                return false;
-            }
-            Thread.sleep(200);
-
-            homeButton.click();
-            device.waitForIdle();
-            Thread.sleep(500);
-
-            found = device.wait(Until.hasObject(By.res(POST)), 6000);
-            if (!found) {
-                Log.i(LOG_TAG, "Could not go back to top of main page");
-                return false;
             }
 
             return true;
@@ -120,10 +102,10 @@ public class TwitterScrollTest extends Benchmark {
         if (!muteButtonFound) {
             found = device.wait(Until.hasObject(By.res(MUTE_BUTTON)), 2000);
             if (found) {
-                Thread.sleep(750);
+                Thread.sleep(250);
                 UiObject2 muteButton = device.findObject(By.res(MUTE_BUTTON));
                 muteButton.click();
-                Thread.sleep(750);
+                Thread.sleep(500);
                 muteButtonFound = true;
             }
         }
@@ -131,7 +113,7 @@ public class TwitterScrollTest extends Benchmark {
         device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
                 deviceWidth / 2, 30 * deviceHeight / 100, 20);
         device.waitForIdle();
-        Thread.sleep(750);
+        Thread.sleep(500);
 
         found = device.hasObject(By.res(POST));
         if (!found) {
