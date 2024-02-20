@@ -4,6 +4,7 @@ import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
 
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.InputEvent;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
@@ -84,11 +85,9 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
             device.pressEnter();
             Thread.sleep(500);
 
-            // UiObject2 pageView = device.findObject(By.res(PAGE_VIEW));
-            // Rect pageBounds = pageView.getVisibleBounds();
-            // device.click(CHAPTER_2_2_LINK_X_PER_MILLE * pageBounds.width() / 1000,
-            //         CHAPTER_2_2_LINK_Y_PER_MILLE * pageBounds.height() / 1000);
-            device.click(390, 1265);
+            // XXX: Sigh. Annoyingly device.click() seems to just end up selecting text instead of
+            // actually clicking the link. So use the `input` command. This is a _really_ big hack.
+            device.executeShellCommand("input tap 310 1265");
             Thread.sleep(1000);
 
             device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
@@ -111,7 +110,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
             device.pressEnter();
             Thread.sleep(1000);
 
-            found = device.wait(Until.gone(By.text("Tap to Cancel")), 10000);
+            found = device.wait(Until.gone(By.text("Tap to Cancel")), 12000);
             if (!found) {
                 Log.i(LOG_TAG, "Search did not complete in time");
                 return false;
@@ -189,14 +188,25 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
         // We override the default implementation since Adobe Acrobat opens two activities that
         // need to be closed at the end if the benchmark fails
         try {
+            device.pressBack();
+            Thread.sleep(250);
+
             device.pressHome();
-            Thread.sleep(50);
+            Thread.sleep(250);
+
             device.pressRecentApps();
-            Thread.sleep(50);
+            device.wait(Until.hasObject(By.res(RECENT_APPS_SNAPSHOTS)), 1000);
+            Thread.sleep(100);
+
             device.swipe(startX, startY, startX, 10, 5);
-            Thread.sleep(200);
+            Thread.sleep(250);
+
             device.swipe(startX, startY, startX, 10, 5);
-            Thread.sleep(200);
+            Thread.sleep(250);
+
+            device.pressHome();
+            Thread.sleep(100);
+
             stopBenchmark();
         } catch (Throwable t) {
             t.printStackTrace();

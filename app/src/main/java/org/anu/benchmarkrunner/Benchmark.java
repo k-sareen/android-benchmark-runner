@@ -6,8 +6,10 @@ import android.app.Instrumentation;
 import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.Until;
 
 import java.io.PrintStream;
 
@@ -20,6 +22,8 @@ public abstract class Benchmark {
     public int deviceHeight;
     public int deviceWidth;
     public int pid = -1;
+
+    public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
 
     public Benchmark(String benchmark, PrintStream writer) {
         this.benchmark = benchmark;
@@ -80,17 +84,25 @@ public abstract class Benchmark {
 
     public void teardownIteration() {
         int startX = deviceWidth / 2;
-        int startY = 60 * deviceHeight / 100;
+        int startY = 70 * deviceHeight / 100;
 
         try {
             device.pressBack();
             Thread.sleep(250);
+
             device.pressHome();
-            Thread.sleep(50);
+            Thread.sleep(250);
+
             device.pressRecentApps();
-            Thread.sleep(50);
+            device.wait(Until.hasObject(By.res(RECENT_APPS_SNAPSHOTS)), 1000);
+            Thread.sleep(100);
+
             device.swipe(startX, startY, startX, 10, 5);
-            Thread.sleep(50);
+            Thread.sleep(250);
+
+            device.pressHome();
+            Thread.sleep(100);
+
             stopBenchmark();
         } catch (Throwable t) {
             t.printStackTrace();
