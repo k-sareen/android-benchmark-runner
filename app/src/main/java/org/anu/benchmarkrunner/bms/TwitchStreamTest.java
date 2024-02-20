@@ -116,7 +116,7 @@ public class TwitchStreamTest extends Benchmark {
             device.pressBack();
             device.waitForIdle();
 
-            found = device.wait(Until.hasObject(By.text("Channels Recommended For You")), 5000);
+            found = device.wait(Until.hasObject(By.text("Channels Recommended For You")), 8000);
             if (!found) {
                 Log.i(LOG_TAG, "Timed out going back to main page");
                 return false;
