@@ -41,23 +41,6 @@ public class RedditScrollTest extends Benchmark {
                 Log.i(LOG_TAG, "Main page did not load in time");
                 return false;
             }
-
-            UiObject2 feedButton = device.wait(Until.findObject(By.res(FEED_BUTTON)), 2000);
-            if (feedButton == null) {
-                Log.i(LOG_TAG, "Feed button not found");
-                return false;
-            }
-
-            feedButton.click();
-            device.waitForIdle();
-
-            feedButton = device.wait(Until.findObject(By.res(FEED_TYPE_LABEL).text("Popular")), 2500);
-            if (feedButton == null) {
-                Log.i(LOG_TAG, "Popular feed button not found");
-                return false;
-            }
-
-            feedButton.click();
             device.waitForIdle();
 
             device.swipe(deviceWidth / 2, 20 * deviceHeight / 100,
@@ -70,7 +53,7 @@ public class RedditScrollTest extends Benchmark {
                 return false;
             }
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < 8; i++) {
                 found = scrollPost();
                 if (!found) {
                     return false;
@@ -88,7 +71,7 @@ public class RedditScrollTest extends Benchmark {
             homeButton.click();
             device.waitForIdle();
 
-            found = device.wait(Until.hasObject(By.res(TRENDING_CAROUSEL)), 3000);
+            found = device.wait(Until.hasObject(By.res(FEED_BUTTON)), 5000);
             if (!found) {
                 Log.i(LOG_TAG, "Did not return to top of main page in time");
                 return false;
@@ -112,36 +95,18 @@ public class RedditScrollTest extends Benchmark {
         if (!muteButtonFound) {
             found = device.wait(Until.hasObject(By.res(MUTE_BUTTON)), 2000);
             if (found) {
-                Thread.sleep(750);
+                Thread.sleep(250);
                 UiObject2 muteButton = device.findObject(By.res(MUTE_BUTTON));
                 muteButton.click();
-                Thread.sleep(750);
+                Thread.sleep(500);
                 muteButtonFound = true;
             }
         }
 
-        UiObject2 post;
-        posts = device.wait(Until.findObjects(By.res(POST_CAROUSEL)), 500);
-        if (posts != null) {
-            if (posts.size() == 1) {
-                post = posts.get(0);
-            } else {
-                post = posts.get(1);
-            }
-
-            try {
-                Rect postBounds = post.getVisibleBounds();
-                device.swipe(80 * deviceWidth / 100, postBounds.centerY(),
-                        20 * deviceWidth / 100, postBounds.centerY(), 20);
-                device.waitForIdle();
-                Thread.sleep(500);
-            } catch (StaleObjectException ignored) {}
-        }
-
         device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
-                deviceWidth / 2, 30 * deviceHeight / 100, 20);
+                deviceWidth / 2, 30 * deviceHeight / 100, 15);
         device.waitForIdle();
-        Thread.sleep(750);
+        Thread.sleep(1000);
 
         found = device.hasObject(By.res(Pattern.compile(POST)));
         if (!found) {
