@@ -21,8 +21,7 @@ public class TwitchStreamTest extends Benchmark {
     static String STREAM_STATUS = "tv.twitch.android.app:id/live_status_indicator";
 
     public TwitchStreamTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

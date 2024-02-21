@@ -24,8 +24,7 @@ public class TwitterScrollTest extends Benchmark {
     boolean muteButtonFound = false;
 
     public TwitterScrollTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

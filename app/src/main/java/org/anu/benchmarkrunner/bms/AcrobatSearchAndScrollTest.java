@@ -31,8 +31,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
     static int TOTAL_PAGES = 883;
 
     public AcrobatSearchAndScrollTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

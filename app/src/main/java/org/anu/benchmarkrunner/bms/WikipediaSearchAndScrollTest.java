@@ -24,8 +24,7 @@ public class WikipediaSearchAndScrollTest extends Benchmark {
     static String TABS_BUTTON = "org.wikipedia:id/page_toolbar_button_tabs";
 
     public WikipediaSearchAndScrollTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

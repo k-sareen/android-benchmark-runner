@@ -25,8 +25,7 @@ public class AirBnBScrollAndClickTest extends Benchmark {
             .hasDescendant(By.clazz("android.view.View").clickable(true));
 
     public AirBnBScrollAndClickTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

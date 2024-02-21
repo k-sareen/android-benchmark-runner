@@ -22,8 +22,7 @@ public class MediumScrollAndClickTest extends Benchmark {
     // static String POST_TITLE = "com.medium.reader:id/post_preview_title";
 
     public MediumScrollAndClickTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

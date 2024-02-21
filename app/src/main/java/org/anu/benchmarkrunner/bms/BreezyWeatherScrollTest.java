@@ -21,8 +21,7 @@ public class BreezyWeatherScrollTest extends Benchmark {
     static String TOOLBAR = "org.breezyweather:id/toolbar";
 
     public BreezyWeatherScrollTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

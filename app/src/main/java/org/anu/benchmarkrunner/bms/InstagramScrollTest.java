@@ -29,7 +29,7 @@ public class InstagramScrollTest extends Benchmark {
     boolean muteButtonFound = false;
 
     public InstagramScrollTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
         activityName = ACTIVITY_NAME;
     }
 

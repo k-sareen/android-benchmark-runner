@@ -24,8 +24,7 @@ public class BBCScrollAndClickTest extends Benchmark {
     static String TOPICS_BUTTON = "bbc.mobile.news.ww:id/topics_graph";
 
     public BBCScrollAndClickTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

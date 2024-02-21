@@ -9,8 +9,7 @@ public class SettingsTest extends Benchmark {
     static String ACTIVITY_NAME = "com.android.settings.Settings";
 
     public SettingsTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

@@ -20,8 +20,7 @@ public class SpotifyListenAndSearchTest extends Benchmark {
     static String SEARCH_BUTTON = "com.spotify.music:id/search_tab";
 
     public SpotifyListenAndSearchTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

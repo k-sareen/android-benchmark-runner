@@ -29,8 +29,7 @@ public class RedditScrollTest extends Benchmark {
     boolean muteButtonFound = false;
 
     public RedditScrollTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override

@@ -25,8 +25,9 @@ public abstract class Benchmark {
 
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
 
-    public Benchmark(String benchmark, PrintStream writer) {
+    public Benchmark(String benchmark, String activityName, PrintStream writer) {
         this.benchmark = benchmark;
+        this.activityName = activityName;
         this.writer = writer;
         instrumentation = InstrumentationRegistry.getInstrumentation();
         device = UiDevice.getInstance(instrumentation);

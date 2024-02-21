@@ -18,8 +18,7 @@ public class FacebookScrollTest extends Benchmark {
     static String ACTIVITY_NAME = "com.facebook.katana.LoginActivity";
 
     public FacebookScrollTest(PrintStream writer) {
-        super(PACKAGE_NAME, writer);
-        activityName = ACTIVITY_NAME;
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
     }
 
     @Override
