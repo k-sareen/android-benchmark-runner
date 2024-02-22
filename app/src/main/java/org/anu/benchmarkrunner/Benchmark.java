@@ -28,6 +28,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
 import java.io.PrintStream;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +41,7 @@ public abstract class Benchmark {
     public int deviceHeight;
     public int deviceWidth;
     public int pid = -1;
+    private JankCollector jankCollector;
 
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
     private static final Pattern STATS_HEADER =
@@ -56,6 +58,7 @@ public abstract class Benchmark {
         device = UiDevice.getInstance(instrumentation);
         this.deviceHeight = device.getDisplayHeight();
         this.deviceWidth = device.getDisplayWidth();
+        this.jankCollector = new JankCollector(device, benchmark);
     }
 
     public final void run() throws Exception {
@@ -142,6 +145,7 @@ public abstract class Benchmark {
         assert pid > 1;
 
         device.executeShellCommand("kill -s USR2 " + pid);
+        jankCollector.harnessBegin();
         Thread.sleep(250);
         writer.println("===== BenchmarkRunner " + benchmark + " starting =====");
     }
@@ -149,6 +153,8 @@ public abstract class Benchmark {
     public final void harnessEnd(long duration, boolean passed) throws Exception {
         device.executeShellCommand("kill -s USR2 " + pid);
         Thread.sleep(500);
+
+        Map<String, Double> jankMetrics = jankCollector.harnessEnd();
 
         if (passed) {
             String logcatOut = device.executeShellCommand("logcat -sd " + getLogTag());
@@ -163,8 +169,17 @@ public abstract class Benchmark {
 
                 Matcher statsHeaderMatcher = STATS_ROW.matcher(tableRows[0]);
                 Matcher statsValuesMatcher = STATS_ROW.matcher(tableRows[1]);
-                writer.println(statsHeaderMatcher.find() ? statsHeaderMatcher.group(2) : tableRows[0]);
-                writer.println(statsValuesMatcher.find() ? statsValuesMatcher.group(2) : tableRows[1]);
+
+                String statsHeader = statsHeaderMatcher.find() ? statsHeaderMatcher.group(2) : tableRows[0];
+                String statsValues = statsValuesMatcher.find() ? statsValuesMatcher.group(2) : tableRows[1];
+
+                for (Map.Entry<String, Double> entry : jankMetrics.entrySet()) {
+                    statsHeader += "\t" + entry.getKey();
+                    statsValues += "\t" + entry.getValue();
+                }
+
+                writer.println(statsHeader);
+                writer.println(statsValues);
 
                 writer.println(footerMatcher.group(2));
             } else {
