@@ -189,7 +189,6 @@ public abstract class Benchmark {
 
         writer.print("===== BenchmarkRunner " + benchmark +
                 (passed ? " PASSED " : " FAILED ") + "in " + duration + " msec =====");
-        Thread.sleep(500);
     }
 
     public final void simulateTyping(String text) {
