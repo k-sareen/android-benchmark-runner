@@ -69,7 +69,6 @@ public class TwitterScrollTest extends Benchmark {
             Thread.sleep(500);
 
             homeButton.click();
-            device.waitForIdle();
             Thread.sleep(1500);
 
             found = device.wait(Until.hasObject(By.res(POST)), 6000);

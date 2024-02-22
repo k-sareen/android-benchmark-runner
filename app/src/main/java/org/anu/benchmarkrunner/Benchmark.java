@@ -152,12 +152,12 @@ public abstract class Benchmark {
 
     public final void harnessEnd(long duration, boolean passed) throws Exception {
         device.executeShellCommand("kill -s USR2 " + pid);
-        Thread.sleep(500);
-
-        Map<String, Double> jankMetrics = jankCollector.harnessEnd();
+        Thread.sleep(300);
 
         if (passed) {
             String logcatOut = device.executeShellCommand("logcat -sd " + getLogTag());
+            Map<String, Double> jankMetrics = jankCollector.harnessEnd();
+
             Matcher headerMatcher = STATS_HEADER.matcher(logcatOut);
             Matcher footerMatcher = STATS_FOOTER.matcher(logcatOut);
 
@@ -170,12 +170,12 @@ public abstract class Benchmark {
                 Matcher statsHeaderMatcher = STATS_ROW.matcher(tableRows[0]);
                 Matcher statsValuesMatcher = STATS_ROW.matcher(tableRows[1]);
 
-                String statsHeader = statsHeaderMatcher.find() ? statsHeaderMatcher.group(2) : tableRows[0];
-                String statsValues = statsValuesMatcher.find() ? statsValuesMatcher.group(2) : tableRows[1];
+                StringBuilder statsHeader = new StringBuilder(statsHeaderMatcher.find() ? statsHeaderMatcher.group(2) : tableRows[0]);
+                StringBuilder statsValues = new StringBuilder(statsValuesMatcher.find() ? statsValuesMatcher.group(2) : tableRows[1]);
 
                 for (Map.Entry<String, Double> entry : jankMetrics.entrySet()) {
-                    statsHeader += "\t" + entry.getKey();
-                    statsValues += "\t" + entry.getValue();
+                    statsHeader.append("\t").append(entry.getKey());
+                    statsValues.append("\t").append(entry.getValue());
                 }
 
                 writer.println(statsHeader);
@@ -187,7 +187,7 @@ public abstract class Benchmark {
             }
         }
 
-        writer.println("===== BenchmarkRunner " + benchmark +
+        writer.print("===== BenchmarkRunner " + benchmark +
                 (passed ? " PASSED " : " FAILED ") + "in " + duration + " msec =====");
         Thread.sleep(500);
     }
