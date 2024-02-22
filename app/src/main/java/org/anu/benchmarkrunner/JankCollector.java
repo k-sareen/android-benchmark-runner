@@ -273,10 +273,12 @@ public class JankCollector {
             throw new RuntimeException("Failed to clear gfxinfo.", e);
         }
     }
+
     /** Return a {@code Map<String, Double>} of {@code gfxinfo} metrics for all processes. */
     Map<String, Double> getGfxInfoMetrics() {
         return getGfxInfoMetrics("");
     }
+
     /** Return a {@code Map<String, Double>} of {@code gfxinfo} metrics for {@code pkg}. */
     Map<String, Double> getGfxInfoMetrics(String pkg) {
         try {
@@ -296,6 +298,7 @@ public class JankCollector {
             throw new RuntimeException("Failed to get gfxinfo.", e);
         }
     }
+
     /** Parse the {@code output} of {@code gfxinfo} to a {@code Map<String, Double>} of metrics. */
     private Map<String, Double> parseGfxInfoMetrics(String output) {
         Matcher header = Pattern.compile(getHeaderMatcher("")).matcher(output);
@@ -319,6 +322,7 @@ public class JankCollector {
         }
         return results;
     }
+
     /**
      * Returns a matcher {@code String} for {@code pkg}'s {@code gfxinfo} headers.
      *
@@ -329,6 +333,7 @@ public class JankCollector {
                 MULTILINE_MATCHER,
                 String.format(GFXINFO_OUTPUT_HEADER, (pkg.isEmpty() ? ".*" : pkg)));
     }
+
     /** Verify the {@code output} matches {@code match}, or throw if not. */
     private void verifyMatches(String output, String match, String message) {
         assert output.matches(match) : message;
