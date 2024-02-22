@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 
 public class BenchmarkRunner extends MonitoringInstrumentation {
-    public static String LOG_TAG = "BenchmarkRunner";
+    public static final String LOG_TAG = "BenchmarkRunner";
     static String selectedBenchmark;
 
     @Override

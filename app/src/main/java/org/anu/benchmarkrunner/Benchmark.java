@@ -28,6 +28,8 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
 import java.io.PrintStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class Benchmark {
     public String benchmark;
@@ -40,6 +42,11 @@ public abstract class Benchmark {
     public int pid = -1;
 
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
+    private static final Pattern STATS_HEADER =
+            Pattern.compile("(\\S+\\s+){6}(============================ Tabulate Statistics ============================)\n");
+    private static final Pattern STATS_FOOTER =
+            Pattern.compile("(\\S+\\s+){6}(-------------------------- End Tabulate Statistics --------------------------)\n");
+    private static final Pattern STATS_ROW = Pattern.compile("(\\S+\\s+){6}(.+)");
 
     public Benchmark(String benchmark, String activityName, PrintStream writer) {
         this.benchmark = benchmark;
@@ -90,7 +97,7 @@ public abstract class Benchmark {
 
     public abstract boolean iterate();
 
-    public void stopBenchmark() {
+    public final void stopBenchmark() {
         try {
             device.executeShellCommand("kill -s KILL " + pid);
             Thread.sleep(100);
@@ -126,7 +133,7 @@ public abstract class Benchmark {
         }
     }
 
-    public void harnessBegin() throws Exception {
+    public final void harnessBegin() throws Exception {
         if (pid == -1) {
             String pidString = device.executeShellCommand("pidof " + benchmark);
             pid = Integer.parseInt(pidString.trim());
@@ -139,9 +146,32 @@ public abstract class Benchmark {
         writer.println("===== BenchmarkRunner " + benchmark + " starting =====");
     }
 
-    public void harnessEnd(long duration, boolean passed) throws Exception {
+    public final void harnessEnd(long duration, boolean passed) throws Exception {
         device.executeShellCommand("kill -s USR2 " + pid);
         Thread.sleep(500);
+
+        if (passed) {
+            String logcatOut = device.executeShellCommand("logcat -sd " + getLogTag());
+            Matcher headerMatcher = STATS_HEADER.matcher(logcatOut);
+            Matcher footerMatcher = STATS_FOOTER.matcher(logcatOut);
+
+            if (headerMatcher.find() && footerMatcher.find()) {
+                writer.println(headerMatcher.group(2));
+
+                String table = logcatOut.substring(headerMatcher.end(), footerMatcher.start());
+                String[] tableRows = table.split("\n");
+
+                Matcher statsHeaderMatcher = STATS_ROW.matcher(tableRows[0]);
+                Matcher statsValuesMatcher = STATS_ROW.matcher(tableRows[1]);
+                writer.println(statsHeaderMatcher.find() ? statsHeaderMatcher.group(2) : tableRows[0]);
+                writer.println(statsValuesMatcher.find() ? statsValuesMatcher.group(2) : tableRows[1]);
+
+                writer.println(footerMatcher.group(2));
+            } else {
+                writer.println("Error occurred when getting stats table");
+            }
+        }
+
         writer.println("===== BenchmarkRunner " + benchmark +
                 (passed ? " PASSED " : " FAILED ") + "in " + duration + " msec =====");
         Thread.sleep(500);
@@ -149,5 +179,16 @@ public abstract class Benchmark {
 
     public final void simulateTyping(String text) {
         instrumentation.sendStringSync(text);
+    }
+
+    public final String getLogTag() {
+        String logTag;
+        if (benchmark.length() > 15) {
+            logTag = benchmark.substring(benchmark.length() - 15);
+        } else {
+            logTag = benchmark;
+        }
+
+        return logTag;
     }
 }
