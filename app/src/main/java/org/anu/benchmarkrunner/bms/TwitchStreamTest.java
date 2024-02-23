@@ -129,14 +129,20 @@ public class TwitchStreamTest extends Benchmark {
 
             device.pressBack();
             device.waitForIdle();
-            Thread.sleep(250);
-
             device.pressBack();
             device.waitForIdle();
-            found = device.wait(Until.hasObject(By.text("Watch")), 6000);
+
+            // XXX: Annoyingly, it seems like the Pixel 4a (5G) requires 4 backs to get to the
+            // main page, while the Pixel 7 Pro requires only 3 backs
+            found = device.wait(Until.hasObject(By.text("Watch")), 500);
             if (!found) {
-                Log.i(LOG_TAG, "Timed out going back to create page");
-                return false;
+                device.pressBack();
+                device.waitForIdle();
+                found = device.wait(Until.hasObject(By.text("Watch")), 6000);
+                if (!found) {
+                    Log.i(LOG_TAG, "Timed out going back to create page");
+                    return false;
+                }
             }
 
             device.pressBack();
