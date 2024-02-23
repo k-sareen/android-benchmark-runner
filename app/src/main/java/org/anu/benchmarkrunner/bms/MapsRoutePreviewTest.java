@@ -65,6 +65,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             directionsButton.click();
             device.waitForIdle();
+            Thread.sleep(250);
 
             UiObject2 swapButton = device.wait(Until.findObject(By.desc("Swap start and destination")), 6000);
             if (swapButton == null) {
@@ -110,7 +111,7 @@ public class MapsRoutePreviewTest extends Benchmark {
                 if (nextButton.isEnabled()) {
                     nextButton.click();
                     device.waitForIdle();
-                    Thread.sleep(1200);
+                    Thread.sleep(1500);
                 } else {
                     break;
                 }
@@ -121,6 +122,8 @@ public class MapsRoutePreviewTest extends Benchmark {
                 Log.i(LOG_TAG, "Did not finish navigation at destination");
                 return false;
             }
+
+            Thread.sleep(750);
 
             device.pressBack();
             device.waitForIdle();
