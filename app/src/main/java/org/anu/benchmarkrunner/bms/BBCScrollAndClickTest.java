@@ -37,6 +37,7 @@ public class BBCScrollAndClickTest extends Benchmark {
     static String ARTICLE_READ_TIME = "bbc.mobile.news.ww:id/headline_read_time";
     static String COLLECTION_HEADER_TITLE = "bbc.mobile.news.ww:id/collection_header_title";
     static String FRONT_PAGE_ARTICLE = "bbc.mobile.news.ww:id/large_promo_container";
+    static String LOADING_ICON = "bbc.mobile.news.ww:id/discovery_progress";
     static String TOPICS_BUTTON = "bbc.mobile.news.ww:id/topics_graph";
 
     public BBCScrollAndClickTest(PrintStream writer) {
@@ -46,7 +47,7 @@ public class BBCScrollAndClickTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.clazz("android.widget.ImageView")), 8000);
+            boolean found = device.wait(Until.gone(By.res(LOADING_ICON)), 8000);
             if (!found) {
                 Log.i(LOG_TAG, "Main page did not load in time");
                 return false;

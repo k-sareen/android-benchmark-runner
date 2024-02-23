@@ -52,8 +52,13 @@ public class TwitchStreamTest extends Benchmark {
             UiObject2 createButton = device.findObject(By.res(CREATE_BUTTON));
             createButton.click();
             device.waitForIdle();
+            Thread.sleep(500);
 
-            createButton = device.findObject(By.text("Create"));
+            createButton = device.wait(Until.findObject(By.text("Create")), 8000);
+            if (createButton == null) {
+                Log.i(LOG_TAG, "Could not find create button");
+                return false;
+            }
             createButton.click();
 
             UiObject2 streamIrlButton = device.wait(Until.findObject(By.res(STREAM_IRL)), 5000);
@@ -124,13 +129,18 @@ public class TwitchStreamTest extends Benchmark {
 
             device.pressBack();
             device.waitForIdle();
-            device.pressBack();
-            device.waitForIdle();
-            device.pressBack();
-            device.waitForIdle();
-            device.pressBack();
-            device.waitForIdle();
+            Thread.sleep(250);
 
+            device.pressBack();
+            device.waitForIdle();
+            found = device.wait(Until.hasObject(By.text("Watch")), 6000);
+            if (!found) {
+                Log.i(LOG_TAG, "Timed out going back to create page");
+                return false;
+            }
+
+            device.pressBack();
+            device.waitForIdle();
             found = device.wait(Until.hasObject(By.text("Channels Recommended For You")), 8000);
             if (!found) {
                 Log.i(LOG_TAG, "Timed out going back to main page");

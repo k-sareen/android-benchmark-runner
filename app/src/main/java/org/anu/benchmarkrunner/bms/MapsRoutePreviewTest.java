@@ -32,6 +32,7 @@ import java.io.PrintStream;
 public class MapsRoutePreviewTest extends Benchmark {
     static String PACKAGE_NAME = "com.google.android.apps.maps";
     static String ACTIVITY_NAME = "com.google.android.maps.MapsActivity";
+    static String SEARCH_BOX = "com.google.android.apps.maps:id/search_omnibox_text_box";
     static BySelector NEXT_BUTTON_SELECTOR = By.desc("Show next");
 
     public MapsRoutePreviewTest(PrintStream writer) {
@@ -41,7 +42,7 @@ public class MapsRoutePreviewTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            UiObject2 searchBar = device.wait(Until.findObject(By.text("Search here")), 6000);
+            UiObject2 searchBar = device.wait(Until.findObject(By.res(SEARCH_BOX)), 6000);
             if (searchBar == null) {
                 Log.i(LOG_TAG, "Main page did not load in time");
                 return false;
@@ -140,7 +141,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             device.pressBack();
             device.waitForIdle();
-            found = device.wait(Until.hasObject(By.text("Search here")), 6000);
+            found = device.wait(Until.hasObject(By.res(SEARCH_BOX)), 6000);
             if (!found) {
                 Log.i(LOG_TAG, "Did not return to home page");
                 return false;
