@@ -284,6 +284,7 @@ public class JankCollector {
         try {
             String command = String.format(GFXINFO_COMMAND_GET, pkg);
             String output = mDevice.executeShellCommand(command);
+            Log.i(LOG_TAG, output);
             verifyMatches(output, getHeaderMatcher(pkg), "Missing package header.");
             // Split each new section starting with two asterisks '**', and then query and append
             // all metrics. This method supports both single-package and multi-package outputs.
