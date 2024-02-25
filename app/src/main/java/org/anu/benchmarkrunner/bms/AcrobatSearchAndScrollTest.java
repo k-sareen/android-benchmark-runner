@@ -20,7 +20,6 @@ import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
 
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.InputEvent;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;

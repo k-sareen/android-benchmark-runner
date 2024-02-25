@@ -18,7 +18,6 @@ package org.anu.benchmarkrunner.bms;
 
 import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
 
-import android.graphics.Rect;
 import android.util.Log;
 
 import androidx.test.uiautomator.By;

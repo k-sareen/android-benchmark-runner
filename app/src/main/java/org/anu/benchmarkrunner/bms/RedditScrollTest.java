@@ -18,11 +18,9 @@ package org.anu.benchmarkrunner.bms;
 
 import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
 
-import android.graphics.Rect;
 import android.util.Log;
 
 import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
