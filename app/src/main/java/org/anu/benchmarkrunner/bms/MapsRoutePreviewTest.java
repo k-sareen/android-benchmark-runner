@@ -33,6 +33,8 @@ public class MapsRoutePreviewTest extends Benchmark {
     static String PACKAGE_NAME = "com.google.android.apps.maps";
     static String ACTIVITY_NAME = "com.google.android.maps.MapsActivity";
     static String SEARCH_BOX = "com.google.android.apps.maps:id/search_omnibox_text_box";
+    static String SET_TIME_BUTTON = "com.google.android.apps.maps:id/dialog_positive_button";
+    static String TIME_PICKER = "android:id/numberpicker_input";
     static BySelector NEXT_BUTTON_SELECTOR = By.desc("Show next");
 
     public MapsRoutePreviewTest(PrintStream writer) {
@@ -91,10 +93,72 @@ public class MapsRoutePreviewTest extends Benchmark {
             device.waitForIdle();
             Thread.sleep(500);
 
+            boolean found = device.wait(
+                    Until.hasObject(By.desc("Preview driving navigation")), 6000);
+            if (!found) {
+                Log.i(LOG_TAG, "Could not find preview route button");
+                return false;
+            }
+
+            UiObject2 menu = device.wait(Until.findObject(By.desc("Overflow menu")), 1000);
+            if (menu == null) {
+                Log.i(LOG_TAG, "Could not find overflow menu");
+                return false;
+            }
+
+            menu.click();
+            device.waitForIdle();
+
+            menu = device.wait(Until.findObject(By.text("Set depart or arrive time")), 6000);
+            if (menu == null) {
+                Log.i(LOG_TAG, "Could not find button to set time");
+                return false;
+            }
+
+            menu.click();
+            device.waitForIdle();
+
+            UiObject2 timePicker = device.wait(Until.findObject(By.res(TIME_PICKER)), 6000);
+            if (timePicker == null) {
+                Log.i(LOG_TAG, "Could not find button to set hour");
+                return false;
+            }
+
+            timePicker.click();
+            device.waitForIdle();
+            Thread.sleep(100);
+            simulateTyping("09");
+
+            try {
+                timePicker = device.wait(Until.findObjects(By.res(TIME_PICKER)), 6000).get(1);
+                if (timePicker == null) {
+                    Log.i(LOG_TAG, "Could not find button to set minutes");
+                    return false;
+                }
+
+                timePicker.click();
+                device.waitForIdle();
+                Thread.sleep(100);
+                simulateTyping("00");
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i(LOG_TAG, "Could not find button to set minutes");
+                return false;
+            }
+
+            timePicker = device.wait(Until.findObject(By.res(SET_TIME_BUTTON)), 6000);
+            if (timePicker == null) {
+                Log.i(LOG_TAG, "Could not find set time button");
+                return false;
+            }
+
+            timePicker.click();
+            device.waitForIdle();
+
             UiObject2 previewButton = device.wait(
                     Until.findObject(By.desc("Preview driving navigation")), 6000);
             if (previewButton == null) {
-                Log.i(LOG_TAG, "Could not find preview route button");
+                Log.i(LOG_TAG, "Could not find preview route button after setting time");
                 return false;
             }
 
@@ -111,13 +175,13 @@ public class MapsRoutePreviewTest extends Benchmark {
                 if (nextButton.isEnabled()) {
                     nextButton.click();
                     device.waitForIdle();
-                    Thread.sleep(1500);
+                    Thread.sleep(1250);
                 } else {
                     break;
                 }
             }
 
-            boolean found = device.wait(Until.hasObject(By.text("468 Pitt St")), 6000);
+            found = device.wait(Until.hasObject(By.text("468 Pitt St")), 6000);
             if (!found) {
                 Log.i(LOG_TAG, "Did not finish navigation at destination");
                 return false;
