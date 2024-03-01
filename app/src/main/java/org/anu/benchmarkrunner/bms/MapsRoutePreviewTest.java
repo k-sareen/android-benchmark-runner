@@ -57,7 +57,7 @@ public class MapsRoutePreviewTest extends Benchmark {
             simulateTyping("Canberra Centre");
             device.pressEnter();
             device.waitForIdle();
-            Thread.sleep(500);
+            Thread.sleep(750);
 
             UiObject2 directionsButton = device.wait(Until.findObject(By.text("Directions")), 6000);
             if (directionsButton == null) {
