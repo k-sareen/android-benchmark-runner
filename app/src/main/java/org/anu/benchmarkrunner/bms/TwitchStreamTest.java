@@ -109,7 +109,7 @@ public class TwitchStreamTest extends Benchmark {
                 return false;
             }
 
-            Thread.sleep(15000);
+            Thread.sleep(30000);
 
             broadcastButton = device.findObject(By.res(BROADCAST_BUTTON));
             broadcastButton.click();
