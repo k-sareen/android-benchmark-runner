@@ -34,6 +34,7 @@ public class SpotifyListenAndSearchTest extends Benchmark {
     static String CURRENT_TRACK_INFO = "com.spotify.music:id/track_info_view_title";
     static String FIND_SEARCH_FIELD = "com.spotify.music:id/find_search_field_text";
     static String SEARCH_BUTTON = "com.spotify.music:id/search_tab";
+    static String TRACK_TITLE = "com.spotify.music:id/title";
 
     public SpotifyListenAndSearchTest(PrintStream writer) {
         super(PACKAGE_NAME, ACTIVITY_NAME, writer);
@@ -42,52 +43,51 @@ public class SpotifyListenAndSearchTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.res(SEARCH_BUTTON)), 2500);
-            if (!found) {
+            UiObject2 search = device.wait(Until.findObject(By.res(SEARCH_BUTTON)), 2500);
+            if (search == null) {
                 Log.i(LOG_TAG, "Main page did not load in time");
                 return false;
             }
 
-            UiObject2 searchButton = device.findObject(By.res(SEARCH_BUTTON));
-            searchButton.click();
+            search.click();
+            device.waitForIdle();
 
-            found = device.wait(Until.hasObject(By.res(FIND_SEARCH_FIELD)), 2500);
-            if (!found) {
-                Log.i(LOG_TAG, "Search page did not load in time 1");
+            search = device.wait(Until.findObject(By.res(FIND_SEARCH_FIELD)), 2500);
+            if (search == null) {
+                Log.i(LOG_TAG, "Search page did not load in time");
                 return false;
             }
-
-            UiObject2 searchBar = device.findObject(By.res(FIND_SEARCH_FIELD));
-            searchBar.click();
+            search.click();
             Thread.sleep(500);
             simulateTyping("Paranoid Android");
             device.pressEnter();
+            device.waitForIdle();
 
-            found = device.wait(Until.hasObject(By.text("Song • Radiohead")), 2500);
-            if (!found) {
+            UiObject2 result = device.wait(Until.findObject(
+                    By.res(TRACK_TITLE).text("Paranoid Android")), 2500);
+            if (result == null) {
                 Log.i(LOG_TAG, "Search did not complete in time");
                 return false;
             }
 
-            UiObject2 result = device.findObject(By.text("Song • Radiohead"));
             result.click();
             Thread.sleep(100);
+            device.waitForIdle();
 
             device.pressBack();
             Thread.sleep(100);
 
-            found = device.wait(Until.hasObject(By.res(FIND_SEARCH_FIELD)), 2500);
-            if (!found) {
-                Log.i(LOG_TAG, "Search page did not load in time 2");
+            search = device.wait(Until.findObject(By.res(FIND_SEARCH_FIELD)), 2500);
+            if (search == null) {
+                Log.i(LOG_TAG, "Search page did not reload in time");
                 return false;
             }
-            searchBar = device.findObject(By.res(FIND_SEARCH_FIELD));
-            searchBar.click();
+            search.click();
             Thread.sleep(500);
             simulateTyping("Pink Floyd");
             device.pressEnter();
 
-            found = device.wait(Until.hasObject(By.text("Featuring Pink Floyd")), 2500);
+            boolean found = device.wait(Until.hasObject(By.text("Featuring Pink Floyd")), 2500);
             if (!found) {
                 Log.i(LOG_TAG, "Search did not complete in time");
                 return false;
@@ -109,32 +109,29 @@ public class SpotifyListenAndSearchTest extends Benchmark {
                     deviceWidth / 2, 80 * deviceHeight / 100, 30);
             Thread.sleep(1000);
 
-            found = device.wait(Until.hasObject(By.text("Artist")), 2500);
-            if (!found) {
+            result = device.wait(Until.findObject(By.text("Artist")), 2500);
+            if (result == null) {
                 Log.i(LOG_TAG, "Can't find artist");
                 return false;
             }
-            result = device.findObject(By.text("Artist"));
             result.click();
             Thread.sleep(100);
 
-            found = device.wait(Until.hasObject(By.text("Another Brick in the Wall, Pt. 2")), 2500);
-            if (!found) {
+            result = device.wait(Until.findObject(By.text("Another Brick in the Wall, Pt. 2")), 2500);
+            if (result == null) {
                 Log.i(LOG_TAG, "Could not find song");
                 return false;
             }
             Thread.sleep(100);
 
-            result = device.findObject(By.text("Another Brick in the Wall, Pt. 2"));
             result.click();
             Thread.sleep(1000);
 
-            found = device.wait(Until.hasObject(By.res(CURRENT_TRACK_INFO)), 2500);
-            if (!found) {
+            result = device.wait(Until.findObject(By.res(CURRENT_TRACK_INFO)), 2500);
+            if (result == null) {
                 Log.i(LOG_TAG, "Currently playing track info not found");
                 return false;
             }
-            result = device.findObject(By.res(CURRENT_TRACK_INFO));
             if (!result.getText().equals("Another Brick in the Wall, Pt. 2")) {
                 Log.i(LOG_TAG, "Incorrect currently playing track");
                 return false;
