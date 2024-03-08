@@ -21,6 +21,7 @@ import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
 import android.util.Log;
 
 import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import org.anu.benchmarkrunner.Benchmark;
@@ -45,15 +46,36 @@ public class TikTokScrollTest extends Benchmark {
                 return false;
             }
 
+            UiObject2 following = device.wait(Until.findObject(By.text("Following")), 6000);
+            if (following == null) {
+                Log.i(LOG_TAG, "Could not find following tab");
+                return false;
+            }
+
+            following.click();
+            device.waitForIdle();
+
+            found = device.wait(Until.hasObject(By.res(POST)), 8000);
+            if (!found) {
+                Log.i(LOG_TAG, "Following tab did not load in time");
+                return false;
+            }
+
             device.swipe(deviceWidth / 2, 30 * deviceHeight / 100,
                     deviceWidth / 2, 50 * deviceHeight / 100, 20);
             Thread.sleep(1500);
+
+            found = device.wait(Until.hasObject(By.res(POST)), 8000);
+            if (!found) {
+                Log.i(LOG_TAG, "Following tab did not reload in time");
+                return false;
+            }
 
             for (int i = 0; i < 12; i++) {
                 device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
                         deviceWidth / 2, 30 * deviceHeight / 100, 15);
                 device.waitForIdle();
-                Thread.sleep(650);
+                Thread.sleep(500);
 
                 found = device.wait(Until.hasObject(By.res(POST)), 100);
                 if (!found) {
