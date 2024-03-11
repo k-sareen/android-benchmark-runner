@@ -82,7 +82,7 @@ public class TwitterScrollTest extends Benchmark {
             device.waitForIdle();
             Thread.sleep(500);
 
-            found = device.wait(Until.hasObject(By.res(MUTE_BUTTON)), 2000);
+            found = device.wait(Until.hasObject(By.res(MUTE_BUTTON)), 500);
             if (found) {
                 Thread.sleep(250);
                 UiObject2 muteButton = device.findObject(By.res(MUTE_BUTTON));
@@ -114,7 +114,7 @@ public class TwitterScrollTest extends Benchmark {
 
         boolean found;
         if (!muteButtonFound) {
-            found = device.wait(Until.hasObject(By.res(MUTE_BUTTON)), 2000);
+            found = device.wait(Until.hasObject(By.res(MUTE_BUTTON)), 500);
             if (found) {
                 Thread.sleep(250);
                 UiObject2 muteButton = device.findObject(By.res(MUTE_BUTTON));
