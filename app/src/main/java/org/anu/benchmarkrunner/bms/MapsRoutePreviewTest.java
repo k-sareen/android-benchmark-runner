@@ -146,6 +146,48 @@ public class MapsRoutePreviewTest extends Benchmark {
                 return false;
             }
 
+            timePicker = device.wait(Until.findObject(By.text("Today")), 6000);
+            if (timePicker == null) {
+                Log.i(LOG_TAG, "Could not find date button");
+                return false;
+            }
+
+            timePicker.click();
+            device.waitForIdle();
+            Thread.sleep(100);
+
+            timePicker = device.wait(Until.findObject(By.desc("Next month")), 6000);
+            if (timePicker == null) {
+                Log.i(LOG_TAG, "Could not find next month button");
+                return false;
+            }
+
+            for (int i = 0; i < 10; i++) {
+                timePicker.click();
+                device.waitForIdle();
+                Thread.sleep(50);
+            }
+
+            timePicker = device.wait(Until.findObject(By.text("1")), 6000);
+            if (timePicker == null) {
+                Log.i(LOG_TAG, "Could not find 1st of month");
+                return false;
+            }
+
+            timePicker.click();
+            device.waitForIdle();
+            Thread.sleep(100);
+
+            timePicker = device.wait(Until.findObject(By.text("OK")), 6000);
+            if (timePicker == null) {
+                Log.i(LOG_TAG, "Could not find OK button");
+                return false;
+            }
+
+            timePicker.click();
+            device.waitForIdle();
+            Thread.sleep(250);
+
             timePicker = device.wait(Until.findObject(By.res(SET_TIME_BUTTON)), 6000);
             if (timePicker == null) {
                 Log.i(LOG_TAG, "Could not find set time button");
