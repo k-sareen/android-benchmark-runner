@@ -65,26 +65,7 @@ public class InstagramScrollTest extends Benchmark {
 
             reels.click();
             device.waitForIdle();
-
-            reels = device.wait(Until.findObject(By.res(REELS_TITLE)), 5000);
-            if (reels == null) {
-                Log.i(LOG_TAG, "Could not find reels button");
-                return false;
-            }
-
-            reels.click();
-            device.waitForIdle();
-
-            reels = device.wait(Until.findObject(
-                    By.res(FOLLOWING_BUTTON).desc("Following")), 5000);
-            if (reels == null) {
-                Log.i(LOG_TAG, "Could not find following button");
-                return false;
-            }
-
-            reels.click();
-            device.waitForIdle();
-            Thread.sleep(500);
+            Thread.sleep(100);
 
             // Pull down to refresh feed
             device.swipe(deviceWidth / 2, 40 * deviceHeight / 100,
@@ -98,8 +79,6 @@ public class InstagramScrollTest extends Benchmark {
                 }
             }
 
-            device.pressBack();
-            device.waitForIdle();
             device.pressBack();
             device.waitForIdle();
 
