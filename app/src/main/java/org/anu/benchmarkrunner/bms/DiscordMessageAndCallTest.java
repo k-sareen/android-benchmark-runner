@@ -147,6 +147,9 @@ public class DiscordMessageAndCallTest extends Benchmark {
 
             Thread.sleep(7000);
 
+            device.click(deviceWidth / 2, deviceHeight / 2);
+            device.waitForIdle();
+
             voice = device.wait(Until.findObject(
                     By.clazz("android.widget.Button").desc("Disconnect")), 6000);
             if (voice == null) {
