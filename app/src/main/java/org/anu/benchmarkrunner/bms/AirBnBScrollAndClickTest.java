@@ -30,15 +30,17 @@ import org.anu.benchmarkrunner.Benchmark;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class AirBnBScrollAndClickTest extends Benchmark {
     static String PACKAGE_NAME = "com.airbnb.android";
     static String ACTIVITY_NAME = "com.airbnb.android.feat.splashscreen.SplashScreenActivity";
-    static String COMPOSE_VIEW = "androidx.compose.ui.platform.ComposeView";
+    static String POST = ".*(USD).*";
     static String SEARCH_BAR = "com.airbnb.android:id/search_bar";
 
-    static BySelector POST_SELECTOR = By.clazz(COMPOSE_VIEW)
-            .hasDescendant(By.clazz("android.view.View").clickable(true));
+    static BySelector POST_SELECTOR = By.clazz("android.view.View")
+            .clickable(true).focusable(true).enabled(true)
+            .hasDescendant(By.clazz("android.view.View").desc(Pattern.compile(POST)));
 
     public AirBnBScrollAndClickTest(PrintStream writer) {
         super(PACKAGE_NAME, ACTIVITY_NAME, writer);
@@ -53,24 +55,6 @@ public class AirBnBScrollAndClickTest extends Benchmark {
                 return false;
             }
 
-            List<UiObject2> posts = device.wait(Until.findObjects(POST_SELECTOR), 5000);
-            if (posts.size() == 0) {
-                Log.i(LOG_TAG, "Posts did not load in time");
-                return false;
-            }
-
-            device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
-                    deviceWidth / 2, 25 * deviceHeight / 100, 30);
-            device.waitForIdle();
-            Thread.sleep(1000);
-
-            for (int i = 0; i < 5; i++) {
-                found = scrollPost();
-                if (!found) {
-                    return false;
-                }
-            }
-
             UiObject2 categories = device.wait(Until.findObject(By.desc("Categories")), 2500);
             if (categories == null) {
                 Log.i(LOG_TAG, "Could not find categories");
@@ -81,8 +65,47 @@ public class AirBnBScrollAndClickTest extends Benchmark {
             List<UiObject2> buttons = categories.findObjects(
                     By.clazz("android.view.View")
                             .hasChild(By.clazz("android.widget.TextView")));
-            if (buttons.size() == 0) {
+            if (buttons.isEmpty()) {
                 Log.i(LOG_TAG, "Could not find category button");
+                return false;
+            } else {
+                button = buttons.get(1);
+            }
+
+            // Don't scroll the "Icons" category, instead pick the next one
+            button.click();
+            device.waitForIdle();
+            Thread.sleep(1000);
+
+            List<UiObject2> posts = device.wait(Until.findObjects(POST_SELECTOR), 5000);
+            if (posts.isEmpty()) {
+                Log.i(LOG_TAG, "Posts did not load in time");
+                return false;
+            }
+
+            device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
+                    deviceWidth / 2, 30 * deviceHeight / 100, 28);
+            device.waitForIdle();
+            Thread.sleep(1000);
+
+            for (int i = 0; i < 5; i++) {
+                found = scrollPost();
+                if (!found) {
+                    return false;
+                }
+            }
+
+            categories = device.wait(Until.findObject(By.desc("Categories")), 2500);
+            if (categories == null) {
+                Log.i(LOG_TAG, "Could not find categories again");
+                return false;
+            }
+
+            buttons = categories.findObjects(
+                    By.clazz("android.view.View")
+                            .hasChild(By.clazz("android.widget.TextView")));
+            if (buttons.isEmpty()) {
+                Log.i(LOG_TAG, "Could not find category buttons again");
                 return false;
             } else {
                 button = buttons.get(3);
@@ -93,7 +116,7 @@ public class AirBnBScrollAndClickTest extends Benchmark {
             Thread.sleep(1000);
 
             device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
-                    deviceWidth / 2, 25 * deviceHeight / 100, 30);
+                    deviceWidth / 2, 30 * deviceHeight / 100, 28);
             device.waitForIdle();
             Thread.sleep(1000);
 
@@ -114,7 +137,7 @@ public class AirBnBScrollAndClickTest extends Benchmark {
     boolean scrollPost() throws InterruptedException {
         UiObject2 post;
         List<UiObject2> posts = device.wait(Until.findObjects(POST_SELECTOR), 5000);
-        if (posts == null || posts.size() == 0) {
+        if (posts == null || posts.isEmpty()) {
             Log.i(LOG_TAG, "No posts visible");
             return false;
         } else if (posts.size() == 1) {
@@ -135,7 +158,7 @@ public class AirBnBScrollAndClickTest extends Benchmark {
         Thread.sleep(500);
 
         device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
-                deviceWidth / 2, 25 * deviceHeight / 100, 30);
+                deviceWidth / 2, 30 * deviceHeight / 100, 28);
         device.waitForIdle();
         Thread.sleep(750);
 
