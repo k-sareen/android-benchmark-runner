@@ -44,10 +44,19 @@ public abstract class Benchmark {
     private JankCollector jankCollector;
 
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
+    private static final String ART_STATS_HEADER =
+            "============================ Tabulate Statistics ============================";
+    private static final String ART_STATS_FOOTER =
+            "-------------------------- End Tabulate Statistics --------------------------";
+    private static final String MMTK_STATS_HEADER =
+            "============================ MMTk Statistics Totals ============================";
+    private static final String MMTK_STATS_FOOTER =
+            "------------------------------ End MMTk Statistics -----------------------------";
     private static final Pattern STATS_HEADER =
-            Pattern.compile("(\\S+\\s+){6}(============================ Tabulate Statistics ============================)\n");
+            Pattern.compile("(\\S+\\s+){6}(" + ART_STATS_HEADER + "|" + MMTK_STATS_HEADER +")\n");
     private static final Pattern STATS_FOOTER =
-            Pattern.compile("(\\S+\\s+){6}(-------------------------- End Tabulate Statistics --------------------------)\n");
+            Pattern.compile("(\\S+\\s+){6}(" + ART_STATS_FOOTER + "|" + MMTK_STATS_FOOTER +")\n");
+
     private static final Pattern STATS_ROW = Pattern.compile("(\\S+\\s+){6}(.+)");
 
     public Benchmark(String benchmark, String activityName, PrintStream writer) {
