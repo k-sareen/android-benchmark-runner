@@ -1,0 +1,101 @@
+includes:
+  - "$RUNNING_NG_PACKAGE_DATA/base/runbms.yml"
+
+suites:
+  android-apps:
+    apk: "org.anu.benchmarkrunner"
+    runner: ".BenchmarkRunner"
+    minheap: art-default
+    minheap_values:
+      art-default:
+        AcrobatSearchAndScrollTest: 256
+        AirBnBScrollAndClickTest: 256
+        BBCScrollAndClickTest: 256
+        DiscordMessageAndCallTest: 256
+        FacebookScrollTest: 256
+        GmailScrollAndClickTest: 256
+        GoogleNewsScrollTest: 256
+        InstagramScrollTest: 256
+        MapsRoutePreviewTest: 256
+        MediumScrollAndClickTest: 256
+        RedditScrollTest: 256
+        SpotifyListenAndSearchTest: 256
+        TikTokScrollTest: 256
+        TwitchStreamTest: 256
+        TwitterScrollTest: 256
+        WikipediaSearchAndScrollTest: 256
+      art-CC:
+        AcrobatSearchAndScrollTest: 18
+        AirBnBScrollAndClickTest: 21
+        BBCScrollAndClickTest: 44
+        DiscordMessageAndCallTest: 19
+        FacebookScrollTest: 46
+        InstagramScrollTest: 38
+        MapsRoutePreviewTest: 59
+        MediumScrollAndClickTest: 29
+        RedditScrollTest: 36
+        SpotifyListenAndSearchTest: 28
+        TikTokScrollTest: 69
+        TwitchStreamTest: 13
+        TwitterScrollTest: 24
+        WikipediaSearchAndScrollTest: 12
+      art-CC-old:
+        AcrobatSearchAndScrollTest: 18
+        AirBnBScrollAndClickTest: 28
+        BBCScrollAndClickTest: 64
+        FacebookScrollTest: 48
+        InstagramScrollTest: 40
+        MediumScrollAndClickTest: 29
+        RedditScrollTest: 36
+        SpotifyListenAndSearchTest: 32
+        TwitchStreamTest: 14
+        TwitterScrollTest: 23
+        WikipediaSearchAndScrollTest: 12
+    timeout: 300
+    type: AndroidApps
+
+overrides:
+  remote_host: null
+  invocations: 10
+  heap_range: 3
+  spread_factor: 3
+
+modifiers:
+  taskset:
+    type: Wrapper
+    val: "taskset -a c0"
+
+runtimes:
+  default:
+    type: AndroidZygote
+    release: "default"
+  art-cmc-vm_9bee5502a4:
+    type: AndroidZygote
+    release: "art-cmc-vm_9bee5502a4"
+  art-ss-vm_9bee5502a4:
+    type: AndroidZygote
+    release: "art-ss-vm_9bee5502a4"
+
+benchmarks:
+  android-apps:
+    - AcrobatSearchAndScrollTest
+    - AirBnBScrollAndClickTest
+    # BBCScrollAndClickTest
+    - DiscordMessageAndCallTest
+    # FacebookScrollTest
+    - GmailScrollAndClickTest
+    - GoogleNewsScrollTest
+    - InstagramScrollTest
+    # - MapsRoutePreviewTest
+    # MediumScrollAndClickTest
+    # RedditScrollTest
+    # SpotifyListenAndSearchTest
+    - TikTokScrollTest
+    - TwitchStreamTest
+    - TwitterScrollTest
+    # WikipediaSearchAndScrollTest
+
+configs:
+  - "default|taskset"
+  # "art-cmc-vm_9bee5502a4|taskset"
+  # "art-ss-vm_9bee5502a4|taskset"

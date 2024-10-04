@@ -1,0 +1,79 @@
+includes:
+  - "$RUNNING_NG_PACKAGE_DATA/base/runbms.yml"
+
+suites:
+  android-apps:
+    apk: "org.anu.benchmarkrunner"
+    runner: ".BenchmarkRunner"
+    minheap: art-cc
+    minheap_values:
+      art-cc:
+        AcrobatSearchAndScrollTest: 20
+        # AirBnBScrollAndClickTest: 18
+        AirBnBScrollAndClickTest: 19
+        BBCScrollAndClickTest: 100
+        DiscordMessageAndCallTest: 20
+        FacebookScrollTest: 46
+        GmailScrollAndClickTest: 18
+        GoogleNewsScrollTest: 17
+        InstagramScrollTest: 38
+        MapsRoutePreviewTest: 65
+        MediumScrollAndClickTest: 29
+        RedditScrollTest: 36
+        SpotifyListenAndSearchTest: 28
+        TikTokScrollTest: 65
+        TwitchStreamTest: 18
+        TwitterScrollTest: 24
+        WikipediaSearchAndScrollTest: 12
+    timeout: 300
+    type: AndroidApps
+
+overrides:
+  remote_host: null
+  invocations: 10
+  heap_range: 3
+  spread_factor: 3
+
+modifiers:
+  taskset:
+    type: Wrapper
+    val: "taskset -a c0"
+
+runtimes:
+  art-cc-ismm24-camera-final-vm_17ff06ce4a:
+    type: AndroidZygote
+    release: "art-cc-ismm24-camera-final-vm_17ff06ce4a"
+  art-cmc-ismm24-camera-final-vm_17ff06ce4a:
+    type: AndroidZygote
+    release: "art-cmc-ismm24-camera-final-vm_17ff06ce4a"
+  art-ss-ismm24-camera-final-vm_17ff06ce4a:
+    type: AndroidZygote
+    release: "art-ss-ismm24-camera-final-vm_17ff06ce4a"
+  art-ss-stock-ismm24-camera-final-vm_358388732a:
+    type: AndroidZygote
+    release: "art-ss-stock-ismm24-camera-final-vm_358388732a"
+
+benchmarks:
+  android-apps:
+    # - AcrobatSearchAndScrollTest
+    # - AirBnBScrollAndClickTest
+    # BBCScrollAndClickTest
+    # - DiscordMessageAndCallTest
+    # FacebookScrollTest
+    # - GmailScrollAndClickTest
+    # - GoogleNewsScrollTest
+    # - InstagramScrollTest
+    - MapsRoutePreviewTest
+    # MediumScrollAndClickTest
+    # RedditScrollTest
+    # SpotifyListenAndSearchTest
+    # - TikTokScrollTest
+    # - TwitchStreamTest
+    # - TwitterScrollTest
+    # WikipediaSearchAndScrollTest
+
+configs:
+  # "art-cc-ismm24-camera-final-vm_17ff06ce4a|taskset"
+  - "art-cmc-ismm24-camera-final-vm_17ff06ce4a|taskset"
+  # "art-ss-ismm24-camera-final-vm_17ff06ce4a|taskset"
+  # "art-ss-stock-ismm24-camera-final-vm_358388732a|taskset"

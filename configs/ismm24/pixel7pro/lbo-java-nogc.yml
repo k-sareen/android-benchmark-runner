@@ -1,0 +1,84 @@
+includes:
+  - "$RUNNING_NG_PACKAGE_DATA/base/runbms.yml"
+
+overrides:
+  remote_host: null
+  invocations: 10
+  heap_range: 3
+  spread_factor: 3
+  "suites.dacapo-android.timing_iteration": 1
+  "suites.dacapo-android.callback": "DacapoBachCallback"
+  "suites.dacapo-android.timeout": 180
+  "suites.dacapo-android.minheap_values.art-CC":
+        {gcbench: 13,
+         lusearch: 3,
+         pmd: 18,
+         xalan: 4}
+
+modifiers:
+  chroot_cc:
+    type: Wrapper
+    val: "chroot /data/local/art-cc env LD_PRELOAD=/apex/com.android.art/lib64/libart.so LD_LIBRARY_PATH=/apex/com.android.art/lib64"
+  chroot_ss:
+    type: Wrapper
+    val: "chroot /data/local/art-ss env LD_PRELOAD=/apex/com.android.art/lib64/libart.so LD_LIBRARY_PATH=/apex/com.android.art/lib64"
+  chroot_cmc:
+    type: Wrapper
+    val: "chroot /data/local/art-cmc env LD_PRELOAD=/apex/com.android.art/lib64/libart.so LD_LIBRARY_PATH=/apex/com.android.art/lib64"
+  ignore_max_footprint:
+    type: JVMArg
+    val: "-XX:IgnoreMaxFootprint"
+  probes:
+    type: JVMArg
+    val: "-Djava.library.path=/data/local/benchmarks/AndroidBachCallback"
+  # compile_first_use:
+  #   type: JVMArg
+  #   val: "-Xjitthreshold:0"
+  use_jit:
+    type: JVMArg
+    val: "-Xusejit:true -Xcompiler-option --compiler-filter=speed"
+  bootclasspath:
+    type: JVMArg
+    val: "-Xbootclasspath:/apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/apex/com.android.i18n/javalib/core-icu4j.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar"
+  use_tlab:
+    type: JVMArg
+    val: "-XX:UseTLAB"
+  no_jdwp_provider:
+    type: JVMArg
+    val: "-XjdwpProvider:none"
+  heap_size:
+    type: JVMArg
+    val: "-Xms{0} -Xmx{0}"
+  taskset:
+    type: Wrapper
+    val: "taskset -a c0"
+  art_common:
+    type: ModifierSet
+    val: probes|use_jit|bootclasspath|use_tlab|no_jdwp_provider|taskset
+
+runtimes:
+  art-cc-vm_e984797017:
+    type: ARTDevice
+    release: "art-cc-vm_e984797017"
+    home: "/apex/com.android.art"
+    image: "/system/framework/art_boot_images/boot.art"
+  art-cmc-vm_e984797017:
+    type: ARTDevice
+    release: "art-cmc-vm_e984797017"
+    home: "/apex/com.android.art"
+    image: "/system/framework/art_boot_images/boot.art"
+  art-ss-vm_dd8588a2e3:
+    type: ARTDevice
+    release: "art-ss-vm_dd8588a2e3"
+    home: "/apex/com.android.art"
+    image: "/system/framework/art_boot_images/boot.art"
+
+benchmarks:
+  dacapo-android:
+   - gcbench
+   - lusearch
+   - pmd
+   - xalan
+
+configs:
+  - "art-ss-vm_dd8588a2e3|art_common|heap_size-900M|ignore_max_footprint|art_gc-NoGC|chroot_ss"
