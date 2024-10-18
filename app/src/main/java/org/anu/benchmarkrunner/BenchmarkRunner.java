@@ -30,12 +30,14 @@ import java.lang.reflect.Constructor;
 public class BenchmarkRunner extends MonitoringInstrumentation {
     public static final String LOG_TAG = "BenchmarkRunner";
     static String selectedBenchmark;
+    static String tasksetMask;
 
     @Override
     public void onCreate(Bundle arguments) {
         super.onCreate(arguments);
         Log.i(LOG_TAG, "OnCreate " + arguments.toString());
         selectedBenchmark = "org.anu.benchmarkrunner.bms." + arguments.getString("bm");
+        tasksetMask = arguments.getString("taskset");
         start();
     }
 
@@ -51,7 +53,7 @@ public class BenchmarkRunner extends MonitoringInstrumentation {
             Class<?> clazz = Class.forName(selectedBenchmark);
             Constructor<?> cons = clazz.getConstructor(PrintStream.class);
             Benchmark benchmark = (Benchmark) cons.newInstance(writer);
-            benchmark.run();
+            benchmark.run(tasksetMask);
         } catch (Throwable t) {
             writer.println(String.format(
                     "Benchmark run aborted due to unexpected exception: %s",

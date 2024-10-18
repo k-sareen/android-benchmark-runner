@@ -41,6 +41,7 @@ public abstract class Benchmark {
     public int deviceHeight;
     public int deviceWidth;
     public int pid = -1;
+    private String tasksetMask;
     private JankCollector jankCollector;
 
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
@@ -68,9 +69,12 @@ public abstract class Benchmark {
         this.deviceHeight = device.getDisplayHeight();
         this.deviceWidth = device.getDisplayWidth();
         this.jankCollector = new JankCollector(device, benchmark);
+        this.tasksetMask = null;
     }
 
-    public final void run() throws Exception {
+    public final void run(String tasksetMask) throws Exception {
+        this.tasksetMask = tasksetMask;
+
         String pidString = device.executeShellCommand("pidof " + benchmark);
         int prevPid = pidString.equals("") ? -1 : Integer.parseInt(pidString.trim());
 
@@ -99,8 +103,13 @@ public abstract class Benchmark {
             configurator.setWaitForIdleTimeout(1000);
             configurator.setWaitForSelectorTimeout(1000);
 
+            String taskset = "";
+            if (tasksetMask != null) {
+                taskset = "taskset -a " + tasksetMask + " ";
+            }
+
             // Start benchmark application
-            device.executeShellCommand("am start -n " + benchmark + "/" + activityName);
+            device.executeShellCommand(taskset + "am start -n " + benchmark + "/" + activityName);
             Thread.sleep(250);
         } catch (Throwable t) {
             t.printStackTrace();
@@ -152,6 +161,14 @@ public abstract class Benchmark {
         }
 
         assert pid > 1;
+
+        // taskset the new process if a tasksetMask has been specified
+        if (tasksetMask != null) {
+            Log.i(LOG_TAG, "taskset mask " + tasksetMask + " specified. " +
+                    "Running " + benchmark + " (PID " + pid + ") under taskset.");
+            device.executeShellCommand("taskset -ap " + tasksetMask + " " + pid);
+            Thread.sleep(100);
+        }
 
         device.executeShellCommand("kill -s USR2 " + pid);
         jankCollector.harnessBegin();
