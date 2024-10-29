@@ -223,7 +223,7 @@ public class MapsRoutePreviewTest extends Benchmark {
                 }
             }
 
-            found = device.wait(Until.hasObject(By.text("468 Pitt St")), 6000);
+            found = device.wait(Until.hasObject(By.text("Eddy Ave")), 6000);
             if (!found) {
                 Log.i(LOG_TAG, "Did not finish navigation at destination");
                 return false;
