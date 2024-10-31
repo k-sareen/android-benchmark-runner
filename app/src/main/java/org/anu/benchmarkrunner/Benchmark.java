@@ -19,6 +19,7 @@ package org.anu.benchmarkrunner;
 import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
 
 import android.app.Instrumentation;
+import android.os.Trace;
 import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -87,9 +88,11 @@ public abstract class Benchmark {
         setupIteration();
         harnessBegin();
 
+        Trace.beginSection("App Benchmark");
         final long start = System.currentTimeMillis();
         boolean passed = iterate();
         final long duration = System.currentTimeMillis() - start;
+        Trace.endSection();
 
         harnessEnd(duration, passed);
         teardownIteration();
@@ -164,6 +167,11 @@ public abstract class Benchmark {
 
         // taskset the new process if a tasksetMask has been specified
         if (tasksetMask != null) {
+            // Hack to get Gmail to taskset properly. If we don't wait here, Gmail threads somehow
+            // ignore the taskset mask and get scheduled to cores not in the mask
+            if (benchmark.equals("com.google.android.gm")) {
+                Thread.sleep(1000);
+            }
             Log.i(LOG_TAG, "taskset mask " + tasksetMask + " specified. " +
                     "Running " + benchmark + " (PID " + pid + ") under taskset.");
             device.executeShellCommand("taskset -ap " + tasksetMask + " " + pid);
