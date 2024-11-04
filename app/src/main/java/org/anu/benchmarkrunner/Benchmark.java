@@ -61,6 +61,9 @@ public abstract class Benchmark {
 
     private static final Pattern STATS_ROW = Pattern.compile("(\\S+\\s+){6}(.+)");
 
+    private static final Pattern GETAFFINITY_MASK =
+            Pattern.compile("pid \\d+'s current affinity mask: (.+)\n");
+
     public Benchmark(String benchmark, String activityName, PrintStream writer) {
         this.benchmark = benchmark;
         this.activityName = activityName;
@@ -167,11 +170,14 @@ public abstract class Benchmark {
 
         // taskset the new process if a tasksetMask has been specified
         if (tasksetMask != null) {
-            // Hack to get Gmail to taskset properly. If we don't wait here, Gmail threads somehow
-            // ignore the taskset mask and get scheduled to cores not in the mask
+            // Hack to get benchmarks to taskset properly. If we don't wait here, benchmark threads
+            // somehow ignore the taskset mask and get scheduled to cores not in the mask
+            int waitTime = 1000;
+            // For some reason Gmail needs a longer wait time?
             if (benchmark.equals("com.google.android.gm")) {
-                Thread.sleep(1000);
+                waitTime = 1500;
             }
+            Thread.sleep(waitTime);
             Log.i(LOG_TAG, "taskset mask " + tasksetMask + " specified. " +
                     "Running " + benchmark + " (PID " + pid + ") under taskset.");
             device.executeShellCommand("taskset -ap " + tasksetMask + " " + pid);
@@ -187,6 +193,31 @@ public abstract class Benchmark {
     public final void harnessEnd(long duration, boolean passed) throws Exception {
         device.executeShellCommand("kill -s USR2 " + pid);
         Thread.sleep(300);
+
+        // If a taskset mask was specified, then check that the benchmark respected that mask.
+        //
+        // This catches obvious mistakes and/or cases where the app will clear or change the taskset
+        // mask, but will not catch a more naughty app that may briefly change the affinity in the
+        // middle of the execution and then reset back to the correct/specified taskset mask near
+        // the end of the benchmark.
+        //
+        // Hence, it is recommended that benchmarks be traced with perfetto or an equivalent tool to
+        // ensure that the benchmark respects the taskset masks correctly.
+        if (passed && tasksetMask != null) {
+            String getaffinityOut = device.executeShellCommand("taskset -p " + pid);
+            Matcher affinityMatcher = GETAFFINITY_MASK.matcher(getaffinityOut);
+
+            if (affinityMatcher.find()) {
+                String actualMask = affinityMatcher.group(1);
+                if (!tasksetMask.equals(actualMask)) {
+                    passed = false;
+                    Log.e(LOG_TAG, "taskset mask " + tasksetMask + " was specified, but benchmark "
+                            + benchmark + " (PID " + pid + ") ran with " + actualMask + " mask! Not printing results!");
+                    writer.println("taskset mask " + tasksetMask + " was specified, but benchmark "
+                            + benchmark + " (PID " + pid + ") ran with " + actualMask + " mask! Not printing results!");
+                }
+            }
+        }
 
         if (passed) {
             String logcatOut = device.executeShellCommand("logcat -sd " + getLogTag());
