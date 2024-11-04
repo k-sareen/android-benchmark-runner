@@ -43,7 +43,7 @@ public abstract class Benchmark {
     public int deviceWidth;
     public int pid = -1;
     private String tasksetMask;
-    private JankCollector jankCollector;
+    private final JankCollector jankCollector;
 
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
     private static final String ART_STATS_HEADER =
@@ -77,7 +77,7 @@ public abstract class Benchmark {
         this.tasksetMask = tasksetMask;
 
         String pidString = device.executeShellCommand("pidof " + benchmark);
-        int prevPid = pidString.equals("") ? -1 : Integer.parseInt(pidString.trim());
+        int prevPid = pidString.isEmpty() ? -1 : Integer.parseInt(pidString.trim());
 
         if (prevPid > 0) {
             device.executeShellCommand("kill -s KILL " + prevPid);
