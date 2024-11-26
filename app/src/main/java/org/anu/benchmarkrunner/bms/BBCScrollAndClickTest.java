@@ -143,7 +143,7 @@ public class BBCScrollAndClickTest extends Benchmark {
 
             return true;
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
             return false;
         }
     }

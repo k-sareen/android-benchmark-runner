@@ -157,9 +157,9 @@ public class JankCollector {
                 1,
                 "gpu_frame_render_time_percentile_99");
 
-        private Pattern mPattern;
-        private int mGroupIndex;
-        private String mMetricId;
+        private final Pattern mPattern;
+        private final int mGroupIndex;
+        private final String mMetricId;
 
         GfxInfoMetric(Pattern pattern, int groupIndex, String metricId) {
             mPattern = pattern;

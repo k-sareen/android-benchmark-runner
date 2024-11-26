@@ -84,7 +84,7 @@ public class MediumScrollAndClickTest extends Benchmark {
 
             return true;
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
             return false;
         }
     }
@@ -106,7 +106,7 @@ public class MediumScrollAndClickTest extends Benchmark {
 
         UiObject2 post;
         List<UiObject2> posts = device.findObjects(By.res(POST));
-        if (posts.size() == 0) {
+        if (posts.isEmpty()) {
             Log.i(LOG_TAG, "Posts not found");
             return false;
         } else if (posts.size() == 1) {

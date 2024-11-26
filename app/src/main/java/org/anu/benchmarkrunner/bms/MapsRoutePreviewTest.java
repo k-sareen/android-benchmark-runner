@@ -141,7 +141,7 @@ public class MapsRoutePreviewTest extends Benchmark {
                 Thread.sleep(100);
                 simulateTyping("00");
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(writer);
                 Log.i(LOG_TAG, "Could not find button to set minutes");
                 return false;
             }
@@ -258,7 +258,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             return true;
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
             return false;
         }
     }

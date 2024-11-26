@@ -92,14 +92,14 @@ public class RedditScrollTest extends Benchmark {
 
             return true;
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
             return false;
         }
     }
 
     boolean scrollPost() throws InterruptedException {
         List<UiObject2> posts = device.wait(Until.findObjects(By.res(Pattern.compile(POST))), 6000);
-        if (posts == null || posts.size() == 0) {
+        if (posts == null || posts.isEmpty()) {
             Log.i(LOG_TAG, "Posts not found");
             return false;
         }

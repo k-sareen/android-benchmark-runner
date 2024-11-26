@@ -37,7 +37,7 @@ public class SettingsTest extends Benchmark {
             Thread.sleep(1000);
             return true;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            e.printStackTrace(writer);
             return false;
         }
     }

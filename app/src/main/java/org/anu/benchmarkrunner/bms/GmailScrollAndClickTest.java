@@ -89,6 +89,7 @@ public class GmailScrollAndClickTest extends Benchmark {
 
             return true;
         } catch (Throwable t) {
+            t.printStackTrace(writer);
             return false;
         }
     }

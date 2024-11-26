@@ -168,7 +168,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
 
             return true;
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
             return false;
         }
     }

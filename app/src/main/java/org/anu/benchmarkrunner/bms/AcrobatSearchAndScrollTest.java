@@ -178,7 +178,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             return true;
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
             return false;
         }
     }
@@ -223,7 +223,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             stopBenchmark();
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
         }
     }
 }
