@@ -48,6 +48,8 @@ public class DiscordMessageAndCallTest extends Benchmark {
                 return false;
             }
 
+            device.waitForIdle();
+
             chatBar.click();
             device.waitForIdle();
             Thread.sleep(500);
@@ -147,14 +149,20 @@ public class DiscordMessageAndCallTest extends Benchmark {
 
             Thread.sleep(7000);
 
-            device.click(deviceWidth / 2, deviceHeight / 2);
-            device.waitForIdle();
-
+            // XXX(kunals): Sigh. For the Pixel 4a, the voice button does not disappear, so we must check
+            // if it exists before we try to make it appear
             voice = device.wait(Until.findObject(
-                    By.clazz("android.widget.Button").desc("Disconnect")), 6000);
+                    By.clazz("android.widget.Button").desc("Disconnect")), 500);
             if (voice == null) {
-                Log.i(LOG_TAG, "Could not find disconnect button");
-                return false;
+                device.click(deviceWidth / 2, deviceHeight / 2);
+                device.waitForIdle();
+
+                voice = device.wait(Until.findObject(
+                        By.clazz("android.widget.Button").desc("Disconnect")), 6000);
+                if (voice == null) {
+                    Log.i(LOG_TAG, "Could not find disconnect button");
+                    return false;
+                }
             }
 
             voice.click();
