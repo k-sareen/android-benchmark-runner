@@ -44,7 +44,8 @@ public abstract class Benchmark {
     public Instrumentation instrumentation;
     public int deviceHeight;
     public int deviceWidth;
-    public int pid = -1;
+    // XXX(kunals): Don't use -1 for the PID! It will kill all processes!
+    public int pid = Integer.MIN_VALUE;
     private String tasksetMask;
     private final JankCollector jankCollector;
 
@@ -83,7 +84,7 @@ public abstract class Benchmark {
         this.tasksetMask = tasksetMask;
 
         String pidString = device.executeShellCommand("pidof " + benchmark);
-        int prevPid = pidString.isEmpty() ? -1 : Integer.parseInt(pidString.trim());
+        int prevPid = pidString.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(pidString.trim());
 
         if (prevPid > 0) {
             device.executeShellCommand("kill -s KILL " + prevPid);
@@ -120,8 +121,15 @@ public abstract class Benchmark {
             // Start benchmark application
             device.executeShellCommand(taskset + "am start -n " + benchmark + "/" + activityName);
             Thread.sleep(250);
+
+            if (pid < 0) {
+                String pidString = device.executeShellCommand("pidof " + benchmark);
+                pid = Integer.parseInt(pidString.trim());
+            }
+
+            assert pid > 1;
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
         }
     }
 
@@ -129,10 +137,11 @@ public abstract class Benchmark {
 
     public final void stopBenchmark() {
         try {
+            assert pid > 1;
             device.executeShellCommand("kill -s KILL " + pid);
             Thread.sleep(100);
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
         }
     }
 
@@ -159,18 +168,11 @@ public abstract class Benchmark {
 
             stopBenchmark();
         } catch (Throwable t) {
-            t.printStackTrace();
+            t.printStackTrace(writer);
         }
     }
 
     public final void harnessBegin() throws Exception {
-        if (pid == -1) {
-            String pidString = device.executeShellCommand("pidof " + benchmark);
-            pid = Integer.parseInt(pidString.trim());
-        }
-
-        assert pid > 1;
-
         // taskset the new process if a tasksetMask has been specified
         if (tasksetMask != null) {
             // Hack to get benchmarks to taskset properly. If we don't wait here, benchmark threads
