@@ -19,8 +19,11 @@ package org.anu.benchmarkrunner;
 import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
 
 import android.app.Instrumentation;
+import android.os.SystemClock;
 import android.os.Trace;
 import android.util.Log;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
@@ -256,8 +259,27 @@ public abstract class Benchmark {
                 (passed ? " PASSED " : " FAILED ") + "in " + duration + " msec =====");
     }
 
-    public final void simulateTyping(String text) {
-        instrumentation.sendStringSync(text);
+    public final void simulateTyping(String text) throws InterruptedException {
+        // This function is copied exactly from Instrumentation.sendStringSync except we wait before
+        // we send subsequent inputs to allow for more realistic typing
+        if (text == null) {
+            return;
+        }
+        KeyCharacterMap keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
+
+        KeyEvent[] events = keyCharacterMap.getEvents(text.toCharArray());
+
+        if (events != null) {
+            for (KeyEvent event : events) {
+                // We have to change the time of an event before injecting it because
+                // all KeyEvents returned by KeyCharacterMap.getEvents() have the same
+                // time stamp and the system rejects too old events. Hence, it is
+                // possible for an event to become stale before it is injected if it
+                // takes too long to inject the preceding ones.
+                instrumentation.sendKeySync(KeyEvent.changeTimeRepeat(event, SystemClock.uptimeMillis(), 0));
+                Thread.sleep(4);
+            }
+        }
     }
 
     public final String getLogTag() {
