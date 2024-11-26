@@ -26,10 +26,13 @@ import androidx.test.runner.MonitoringInstrumentation;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.TreeSet;
 
 public class BenchmarkRunner extends MonitoringInstrumentation {
     public static final String LOG_TAG = "BenchmarkRunner";
     static String selectedBenchmark;
+    static String[] selectedAdversaries;
     static String tasksetMask;
 
     @Override
@@ -38,6 +41,19 @@ public class BenchmarkRunner extends MonitoringInstrumentation {
         Log.i(LOG_TAG, "OnCreate " + arguments.toString());
         selectedBenchmark = "org.anu.benchmarkrunner.bms." + arguments.getString("bm");
         tasksetMask = arguments.getString("taskset");
+        if (arguments.getString("adv") != null) {
+            String[] tmp = arguments.getString("adv").split(",");
+            // Use a TreeMap to guarantee insertion order
+            TreeSet<String> tmpSet = new TreeSet<>(Arrays.asList(tmp));
+
+            selectedAdversaries = new String[tmpSet.size()];
+            selectedAdversaries = tmpSet.toArray(selectedAdversaries);
+            for (int i = 0; i < selectedAdversaries.length; i++) {
+                selectedAdversaries[i] = "org.anu.benchmarkrunner.adversaries." + selectedAdversaries[i];
+            }
+        } else {
+            selectedAdversaries = null;
+        }
         start();
     }
 
@@ -53,7 +69,18 @@ public class BenchmarkRunner extends MonitoringInstrumentation {
             Class<?> clazz = Class.forName(selectedBenchmark);
             Constructor<?> cons = clazz.getConstructor(PrintStream.class);
             Benchmark benchmark = (Benchmark) cons.newInstance(writer);
-            benchmark.run(tasksetMask);
+
+            if (selectedAdversaries != null) {
+                Adversary[] adversaries = new Adversary[selectedAdversaries.length];
+                for (int i = 0; i < adversaries.length; i++) {
+                    clazz = Class.forName(selectedAdversaries[i]);
+                    cons = clazz.getConstructor(PrintStream.class);
+                    adversaries[i] = (Adversary) cons.newInstance(writer);
+                }
+                benchmark.runWithAdversaries(adversaries, tasksetMask);
+            } else {
+                benchmark.run(tasksetMask);
+            }
         } catch (Throwable t) {
             writer.println(String.format(
                     "Benchmark run aborted due to unexpected exception: %s",

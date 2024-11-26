@@ -105,6 +105,45 @@ public abstract class Benchmark {
         teardownIteration();
     }
 
+    public final void runWithAdversaries(Adversary[] adversaries, String tasksetMask) throws Exception {
+        this.tasksetMask = tasksetMask;
+
+        String pidString = device.executeShellCommand("pidof " + benchmark);
+        int prevPid = pidString.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(pidString.trim());
+
+        if (prevPid > 0) {
+            device.executeShellCommand("kill -s KILL " + prevPid);
+            Thread.sleep(250);
+            Log.i(LOG_TAG, "Killed previous pid " + prevPid + " for benchmark " + benchmark);
+        }
+
+        for (Adversary adv: adversaries) {
+            // Run the adversary
+            adv.setupIteration();
+            adv.iterate();
+            // Put the adversary in the background
+            device.pressHome();
+            device.waitForIdle();
+            Thread.sleep(250);
+        }
+
+        setupIteration();
+        harnessBegin();
+
+        Trace.beginSection("App Benchmark");
+        final long start = System.currentTimeMillis();
+        boolean passed = iterate();
+        final long duration = System.currentTimeMillis() - start;
+        Trace.endSection();
+
+        harnessEnd(duration, passed);
+        teardownIteration();
+
+        for (Adversary adv: adversaries) {
+            adv.teardownIteration();
+        }
+    }
+
     public void setupIteration() {
         try {
             // Set the wait for idle and selector timeouts to be 1s because it takes too
