@@ -101,7 +101,8 @@ public class DiscordMessageAndCallTest extends Benchmark {
             device.pressEnter();
             device.waitForIdle();
 
-            device.wait(Until.gone(By.res(UPLOAD_PROGRESS)), 6000);
+            device.wait(Until.gone(By.res(UPLOAD_PROGRESS)), 8000);
+            device.waitForIdle();
 
             UiObject2 message = device.wait(Until.findObject(By.text("Check this picture out!")), 6000);
             if (message == null) {
