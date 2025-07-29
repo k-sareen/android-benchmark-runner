@@ -33,7 +33,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
     static String ACTIVITY_NAME = "com.discord.main.MainDefault";
     static String CHAT_BAR = "com.discord:id/chat_input_edit_text";
     static String POST_ACCESSORIES = "com.discord:id/accessories_view";
-    static String UPLOAD_PROGRESS = "com.discord:id/upload_progress_background";
+    static String UPLOAD_PROGRESS = "com.discord:id/upload_progress";
 
     public DiscordMessageAndCallTest(PrintStream writer) {
         super(PACKAGE_NAME, ACTIVITY_NAME, writer);
@@ -101,7 +101,18 @@ public class DiscordMessageAndCallTest extends Benchmark {
             device.pressEnter();
             device.waitForIdle();
 
-            device.wait(Until.gone(By.res(UPLOAD_PROGRESS)), 8000);
+            found = device.wait(Until.hasObject(By.res(UPLOAD_PROGRESS)), 2000);
+            if (!found) {
+                Log.i(LOG_TAG, "Could not find upload progress bar");
+                return false;
+            }
+            device.waitForIdle();
+
+            found = device.wait(Until.gone(By.res(UPLOAD_PROGRESS)), 8000);
+            if (!found) {
+                Log.i(LOG_TAG, "Upload did not finish in timeout");
+                return false;
+            }
             device.waitForIdle();
 
             UiObject2 message = device.wait(Until.findObject(By.text("Check this picture out!")), 6000);
