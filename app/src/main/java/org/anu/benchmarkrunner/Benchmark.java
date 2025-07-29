@@ -48,6 +48,7 @@ public abstract class Benchmark {
     public int pid = Integer.MIN_VALUE;
     private String tasksetMask;
     private final JankCollector jankCollector;
+    private boolean hasError = false;
 
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
     private static final String ART_STATS_HEADER =
@@ -169,6 +170,7 @@ public abstract class Benchmark {
             assert pid > 1;
         } catch (Throwable t) {
             t.printStackTrace(writer);
+            hasError = true;
         }
     }
 
@@ -181,6 +183,7 @@ public abstract class Benchmark {
             Thread.sleep(100);
         } catch (Throwable t) {
             t.printStackTrace(writer);
+            hasError = true;
         }
     }
 
@@ -235,6 +238,7 @@ public abstract class Benchmark {
     }
 
     public final void harnessEnd(long duration, boolean passed) throws Exception {
+        assert pid > 1;
         device.executeShellCommand("kill -s USR2 " + pid);
         Thread.sleep(300);
 
@@ -263,7 +267,7 @@ public abstract class Benchmark {
             }
         }
 
-        if (passed) {
+        if (!hasError && passed) {
             String logcatOut = device.executeShellCommand("logcat -sd " + getLogTag());
             Map<String, Double> jankMetrics = jankCollector.harnessEnd();
 
@@ -297,7 +301,7 @@ public abstract class Benchmark {
         }
 
         writer.print("===== BenchmarkRunner " + benchmark +
-                (passed ? " PASSED " : " FAILED ") + "in " + duration + " msec =====");
+                ((!hasError && passed) ? " PASSED " : " FAILED ") + "in " + duration + " msec =====");
     }
 
     public final void simulateTyping(String text) throws InterruptedException {
