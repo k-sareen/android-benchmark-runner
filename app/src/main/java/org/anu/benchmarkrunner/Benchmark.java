@@ -153,14 +153,12 @@ public abstract class Benchmark {
             configurator.setWaitForIdleTimeout(1000);
             configurator.setWaitForSelectorTimeout(1000);
 
-            String taskset = "";
-            if (tasksetMask != null) {
-                taskset = "taskset -a " + tasksetMask + " ";
-            }
-
-            // Start benchmark application
-            device.executeShellCommand(taskset + "am start -n " + benchmark + "/" + activityName);
-            Thread.sleep(250);
+            // Start benchmark application. We don't taskset the `am` command here since it will
+            // end up interfering too much with the application otherwise. Ideally we can schedule
+            // it onto the unused cores, but for the time being, we are letting the OS decide
+            // where to schedule it.
+            device.executeShellCommand("am start -n " + benchmark + "/" + activityName);
+            Thread.sleep(300);
 
             if (pid < 0) {
                 String pidString = device.executeShellCommand("pidof " + benchmark);
