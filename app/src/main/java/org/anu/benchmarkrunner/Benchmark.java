@@ -220,7 +220,7 @@ public abstract class Benchmark {
             int waitTime = 1000;
             // For some reason Gmail needs a longer wait time?
             if (benchmark.equals("com.google.android.gm")) {
-                waitTime = 1500;
+                waitTime = 2000;
             }
             Thread.sleep(waitTime);
             Log.i(LOG_TAG, "taskset mask " + tasksetMask + " specified. " +
