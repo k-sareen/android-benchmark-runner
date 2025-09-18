@@ -34,6 +34,7 @@ public class BenchmarkRunner extends MonitoringInstrumentation {
     static String selectedBenchmark;
     static String[] selectedAdversaries;
     static String tasksetMask;
+    static int tasksetWaitTime;
 
     @Override
     public void onCreate(Bundle arguments) {
@@ -41,6 +42,13 @@ public class BenchmarkRunner extends MonitoringInstrumentation {
         Log.i(LOG_TAG, "OnCreate " + arguments.toString());
         selectedBenchmark = "org.anu.benchmarkrunner.bms." + arguments.getString("bm");
         tasksetMask = arguments.getString("taskset");
+        String tasksetWaitString = arguments.getString("tasksetWait");
+        if (tasksetWaitString != null) {
+            tasksetWaitTime = Integer.parseInt(tasksetWaitString);
+        } else {
+            tasksetWaitTime = -1;
+        }
+
         if (arguments.getString("adv") != null) {
             String[] tmp = arguments.getString("adv").split(",");
             // Use a TreeMap to guarantee insertion order
@@ -77,9 +85,9 @@ public class BenchmarkRunner extends MonitoringInstrumentation {
                     cons = clazz.getConstructor(PrintStream.class);
                     adversaries[i] = (Adversary) cons.newInstance(writer);
                 }
-                benchmark.runWithAdversaries(adversaries, tasksetMask);
+                benchmark.runWithAdversaries(adversaries, tasksetMask, tasksetWaitTime);
             } else {
-                benchmark.run(tasksetMask);
+                benchmark.run(tasksetMask, tasksetWaitTime);
             }
         } catch (Throwable t) {
             writer.println(String.format(

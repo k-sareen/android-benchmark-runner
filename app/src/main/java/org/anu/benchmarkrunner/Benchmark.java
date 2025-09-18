@@ -47,6 +47,7 @@ public abstract class Benchmark {
     // XXX(kunals): Don't use -1 for the PID! It will kill all processes!
     public int pid = Integer.MIN_VALUE;
     private String tasksetMask;
+    private int tasksetWaitTime;
     private final JankCollector jankCollector;
     private boolean hasError = false;
 
@@ -81,8 +82,9 @@ public abstract class Benchmark {
         this.tasksetMask = null;
     }
 
-    public final void run(String tasksetMask) throws Exception {
+    public final void run(String tasksetMask, int tasksetWaitTime) throws Exception {
         this.tasksetMask = tasksetMask;
+        this.tasksetWaitTime = tasksetWaitTime;
 
         String pidString = device.executeShellCommand("pidof " + benchmark);
         int prevPid = pidString.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(pidString.trim());
@@ -106,8 +108,9 @@ public abstract class Benchmark {
         teardownIteration();
     }
 
-    public final void runWithAdversaries(Adversary[] adversaries, String tasksetMask) throws Exception {
+    public final void runWithAdversaries(Adversary[] adversaries, String tasksetMask, int tasksetWaitTime) throws Exception {
         this.tasksetMask = tasksetMask;
+        this.tasksetWaitTime = tasksetWaitTime;
 
         String pidString = device.executeShellCommand("pidof " + benchmark);
         int prevPid = pidString.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(pidString.trim());
@@ -217,16 +220,16 @@ public abstract class Benchmark {
         if (tasksetMask != null) {
             // Hack to get benchmarks to taskset properly. If we don't wait here, benchmark threads
             // somehow ignore the taskset mask and get scheduled to cores not in the mask
-            int waitTime = 1000;
+            int waitTime = Math.max(tasksetWaitTime, 1000);
             // For some reason Gmail needs a longer wait time?
             if (benchmark.equals("com.google.android.gm")) {
-                waitTime = 2000;
+                waitTime += 1000;
             }
             Thread.sleep(waitTime);
             Log.i(LOG_TAG, "taskset mask " + tasksetMask + " specified. " +
                     "Running " + benchmark + " (PID " + pid + ") under taskset.");
             device.executeShellCommand("taskset -ap " + tasksetMask + " " + pid);
-            Thread.sleep(100);
+            Thread.sleep(250);
         }
 
         device.executeShellCommand("kill -s USR2 " + pid);
