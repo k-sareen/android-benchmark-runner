@@ -69,7 +69,6 @@ public class TwitterScrollTest extends Benchmark {
                 Log.i(LOG_TAG, "Following button not found");
                 return false;
             }
-            Log.i(LOG_TAG, "Following button " + navigationButton);
             navigationButton.click();
             device.waitForIdle();
 
