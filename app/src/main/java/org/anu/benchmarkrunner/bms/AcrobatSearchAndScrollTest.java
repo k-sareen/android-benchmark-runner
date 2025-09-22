@@ -33,6 +33,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
     static String PACKAGE_NAME = "com.adobe.reader";
     static String ACTIVITY_NAME = "com.adobe.reader.AdobeReader";
     static String BOTTOM_TOOL_BAR = "com.adobe.reader:id/quick_tool_items_container";
+    static String CONTEXT_MENU = "com.adobe.reader:id/context_board";
     static String FILES_BUTTON = "com.adobe.reader:id/bottombaritem_document_connectors";
     static String PAGE_VIEW = "com.adobe.reader:id/pageView";
     static String SCROLL_BAR = "com.adobe.reader:id/verticalScrubber";
@@ -84,6 +85,37 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
                 return false;
             }
             Thread.sleep(500);
+
+            UiObject2 contextMenu = device.wait(Until.findObject(By.res(CONTEXT_MENU)), 2000);
+            if (contextMenu == null) {
+                Log.i(LOG_TAG, "Context menu button did not load in time");
+                return false;
+            }
+            Thread.sleep(100);
+            contextMenu.click();
+            device.waitForIdle();
+
+            contextMenu = device.wait(Until.findObject(By.text("Bookmarks & Table of Contents")), 2000);
+            if (contextMenu == null) {
+                Log.i(LOG_TAG, "Bookmarks button did not load in time");
+                return false;
+            }
+            Thread.sleep(100);
+            contextMenu.click();
+            device.waitForIdle();
+
+            UiObject2 bookmark = device.wait(Until.findObject(By.text("Page 1")), 2000);
+            if (bookmark == null) {
+                Log.i(LOG_TAG, "Bookmarks did not load in time");
+                return false;
+            }
+            Thread.sleep(100);
+            bookmark.click();
+            device.waitForIdle();
+
+            // Exit from the bookmarks menu
+            device.click(deviceWidth / 2, 30 * deviceHeight / 100);
+            device.waitForIdle();
 
             clickScrollBarAtPage(1);
             UiObject2 textBar = device.wait(Until.findObject(By.text("Enter page number")), 2000);
@@ -149,26 +181,12 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
                 return false;
             }
 
-            clickScrollBarAtPage(754);
-            textBar = device.wait(Until.findObject(By.text("Enter page number")), 2000);
-            if (textBar == null) {
-                Log.i(LOG_TAG, "Page selection text box did not load in time");
-                return false;
-            }
-            Thread.sleep(100);
-
-            textBar.click();
-            Thread.sleep(100);
-            simulateTyping("1");
-            device.pressEnter();
-            Thread.sleep(500);
-
             device.pressBack();
-            Thread.sleep(100);
+            Thread.sleep(250);
             device.pressBack();
-            Thread.sleep(100);
+            Thread.sleep(250);
             device.pressBack();
-            Thread.sleep(100);
+            Thread.sleep(250);
 
             found = device.wait(Until.hasObject(By.res(FILES_BUTTON)), 2000);
             if (!found) {
