@@ -33,8 +33,10 @@ import java.util.regex.Pattern;
 public class TwitterScrollTest extends Benchmark {
     static String PACKAGE_NAME = "com.twitter.android";
     static String ACTIVITY_NAME = "com.twitter.android.StartActivity";
+    static String EMPTY_HOME = "com.twitter.android:id/empty_title";
     static String HOME_BUTTON = "Home(. New items)?";
     static String MUTE_BUTTON = "com.twitter.android:id/audio_toggle_view";
+    static String NAVIGATION_BUTTON = "Show navigation drawer";
     static String POST = "com.twitter.android:id/row";
 
     boolean muteButtonFound = false;
@@ -46,39 +48,47 @@ public class TwitterScrollTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.res(POST)), 6000);
+            boolean found = device.wait(Until.hasObject(By.res(EMPTY_HOME)), 6000);
             if (!found) {
                 Log.i(LOG_TAG, "Main page did not load in time");
                 return false;
             }
 
-            UiObject2 followingFeed = device.wait(Until.findObject(By.text("Following")), 5000);
-            if (followingFeed == null) {
-                Log.i(LOG_TAG, "Following feed not found");
+            UiObject2 navigationButton = device.wait(Until.findObject(By.desc(NAVIGATION_BUTTON)), 5000);
+            if (navigationButton == null) {
+                Log.i(LOG_TAG, "Navigation button not found");
                 return false;
             }
-            followingFeed.click();
+            navigationButton.click();
+            device.waitForIdle();
 
-            UiObject2 homeButton = device.wait(Until.findObject(
-                    By.clazz("android.widget.LinearLayout")
-                            .desc(Pattern.compile(HOME_BUTTON))), 5000);
-            if (homeButton == null) {
-                Log.i(LOG_TAG, "Home button not found");
+            // Need to select the correct "Following" button. There are two, but the one we want does not have
+            // a resource id. Hence add the extra requirement of an empty resource id.
+            navigationButton = device.wait(Until.findObject(By.text("Following").res("")), 5000);
+            if (navigationButton == null) {
+                Log.i(LOG_TAG, "Following button not found");
                 return false;
             }
-            Thread.sleep(500);
+            Log.i(LOG_TAG, "Following button " + navigationButton);
+            navigationButton.click();
+            device.waitForIdle();
 
-            homeButton.click();
-            Thread.sleep(1500);
+            navigationButton = device.wait(Until.findObject(By.text("@DreamPhil97")), 5000);
+            if (navigationButton == null) {
+                Log.i(LOG_TAG, "Followed users not found");
+                return false;
+            }
+            navigationButton.click();
+            device.waitForIdle();
 
             found = device.wait(Until.hasObject(By.res(POST)), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Refresh did not finish in time");
+                Log.i(LOG_TAG, "User page did not load in time");
                 return false;
             }
 
             device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
-                    deviceWidth / 2, 30 * deviceHeight / 100, 25);
+                    deviceWidth / 2, 50 * deviceHeight / 100, 15);
             device.waitForIdle();
             Thread.sleep(500);
 
