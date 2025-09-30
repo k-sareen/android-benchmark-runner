@@ -161,7 +161,7 @@ public abstract class Benchmark {
             // it onto the unused cores, but for the time being, we are letting the OS decide
             // where to schedule it.
             device.executeShellCommand("am start -n " + benchmark + "/" + activityName);
-            Thread.sleep(300);
+            Thread.sleep(500);
 
             if (pid < 0) {
                 String pidString = device.executeShellCommand("pidof " + benchmark);
@@ -229,12 +229,12 @@ public abstract class Benchmark {
             Log.i(LOG_TAG, "taskset mask " + tasksetMask + " specified. " +
                     "Running " + benchmark + " (PID " + pid + ") under taskset.");
             device.executeShellCommand("taskset -ap " + tasksetMask + " " + pid);
-            Thread.sleep(250);
+            Thread.sleep(500);
         }
 
         device.executeShellCommand("kill -s USR2 " + pid);
         jankCollector.harnessBegin();
-        Thread.sleep(250);
+        Thread.sleep(300);
         writer.println("===== BenchmarkRunner " + benchmark + " starting =====");
     }
 
