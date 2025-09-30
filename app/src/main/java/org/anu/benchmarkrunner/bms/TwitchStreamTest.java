@@ -43,7 +43,7 @@ public class TwitchStreamTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.text("Channels Recommended For You")), 5000);
+            boolean found = device.wait(Until.hasObject(By.text("Channels Recommended For You")), 6000);
             if (!found) {
                 Log.i(LOG_TAG, "Main page did not load in time");
                 return false;
