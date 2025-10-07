@@ -42,13 +42,13 @@ public class TikTokScrollTest extends Benchmark {
         try {
             boolean found = device.wait(Until.hasObject(By.res(POST)), 8000);
             if (!found) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
             UiObject2 following = device.wait(Until.findObject(By.text("Following")), 6000);
             if (following == null) {
-                Log.i(LOG_TAG, "Could not find following tab");
+                Log.i(LOG_TAG, "FAILED: Could not find following tab");
                 return false;
             }
 
@@ -57,17 +57,17 @@ public class TikTokScrollTest extends Benchmark {
 
             found = device.wait(Until.hasObject(By.res(POST)), 8000);
             if (!found) {
-                Log.i(LOG_TAG, "Following tab did not load in time");
+                Log.i(LOG_TAG, "FAILED: Following tab did not load in time");
                 return false;
             }
 
             device.swipe(deviceWidth / 2, 30 * deviceHeight / 100,
-                    deviceWidth / 2, 50 * deviceHeight / 100, 20);
+                    deviceWidth / 2, 70 * deviceHeight / 100, 20);
             Thread.sleep(1500);
 
             found = device.wait(Until.hasObject(By.res(POST)), 8000);
             if (!found) {
-                Log.i(LOG_TAG, "Following tab did not reload in time");
+                Log.i(LOG_TAG, "FAILED: Following tab did not reload in time");
                 return false;
             }
 
@@ -79,7 +79,7 @@ public class TikTokScrollTest extends Benchmark {
 
                 found = device.wait(Until.hasObject(By.res(POST)), 100);
                 if (!found) {
-                    Log.i(LOG_TAG, "Could not find post");
+                    Log.i(LOG_TAG, "FAILED: Could not find post");
                     return false;
                 }
             }
