@@ -38,7 +38,7 @@ public class InstagramScrollTest extends Benchmark {
     static String MUTE_BUTTON = "com.instagram.android:id/indicator";
     static String POST = "com.instagram.android:id/(((carousel_(video_)?)?media_group)|carousel_image)";
     static String REEL = "com.instagram.android:id/clips_swipe_refresh_container";
-    static String REELS_LIST = "reels_tray_container";
+    static String REELS_LIST = "com.instagram.android:id/reels_tray_container";
     static String REELS_TAB = "com.instagram.android:id/clips_tab";
     static String REELS_TITLE = "com.instagram.android:id/action_bar_large_title";
     static BySelector POST_SELECTOR = By.res(Pattern.compile(POST)).desc(Pattern.compile(".*(likes|Liked).*"));
@@ -51,15 +51,15 @@ public class InstagramScrollTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.desc(REELS_LIST)), 5000);
+            boolean found = device.wait(Until.hasObject(By.res(REELS_LIST)), 5000);
             if (!found) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
             UiObject2 reels = device.wait(Until.findObject(By.res(REELS_TAB)), 5000);
             if (reels == null) {
-                Log.i(LOG_TAG, "Could not find reels tab");
+                Log.i(LOG_TAG, "FAILED: Could not find reels tab");
                 return false;
             }
 
@@ -84,7 +84,7 @@ public class InstagramScrollTest extends Benchmark {
 
             found = device.wait(Until.hasObject(By.text("Your story")), 2000);
             if (!found) {
-                Log.i(LOG_TAG, "Did not make it back to top of feed");
+                Log.i(LOG_TAG, "FAILED: Did not make it back to top of feed");
                 return false;
             }
 
@@ -98,7 +98,7 @@ public class InstagramScrollTest extends Benchmark {
     boolean scrollPost() throws InterruptedException {
         List<UiObject2> posts = device.wait(Until.findObjects(By.res(REEL)), 2000);
         if (posts == null || posts.isEmpty()) {
-            Log.i(LOG_TAG, "No posts visible");
+            Log.i(LOG_TAG, "FAILED: No posts visible");
             return false;
         }
 
