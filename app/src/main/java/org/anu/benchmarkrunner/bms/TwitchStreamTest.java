@@ -32,7 +32,8 @@ public class TwitchStreamTest extends Benchmark {
     static String PACKAGE_NAME = "tv.twitch.android.app";
     static String ACTIVITY_NAME = "tv.twitch.android.app.core.LandingActivity";
     static String BROADCAST_BUTTON = "tv.twitch.android.app:id/broadcast_button_animation";
-    static String CREATE_BUTTON = "tv.twitch.android.app:id/swap_to_creator_mode_button";
+    static String CREATE_BUTTON = "tv.twitch.android.app:id/custom_create_bottom_nav_button";
+    static String PLAYING_OVERLAY = "tv.twitch.android.app:id/playing_overlay";
     static String STREAM_IRL = "tv.twitch.android.app:id/option_stream_irl";
     static String STREAM_STATUS = "tv.twitch.android.app:id/live_status_indicator";
 
@@ -43,9 +44,9 @@ public class TwitchStreamTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.text("Channels Recommended For You")), 6000);
+            boolean found = device.wait(Until.hasObject(By.res(PLAYING_OVERLAY)), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
@@ -54,16 +55,9 @@ public class TwitchStreamTest extends Benchmark {
             device.waitForIdle();
             Thread.sleep(500);
 
-            createButton = device.wait(Until.findObject(By.text("Create")), 8000);
-            if (createButton == null) {
-                Log.i(LOG_TAG, "Could not find create button");
-                return false;
-            }
-            createButton.click();
-
             UiObject2 streamIrlButton = device.wait(Until.findObject(By.res(STREAM_IRL)), 5000);
             if (streamIrlButton == null) {
-                Log.i(LOG_TAG, "Stream IRL button not found");
+                Log.i(LOG_TAG, "FAILED: Stream IRL button not found");
                 return false;
             }
 
@@ -73,7 +67,7 @@ public class TwitchStreamTest extends Benchmark {
 
             UiObject2 broadcastButton = device.wait(Until.findObject(By.res(BROADCAST_BUTTON)), 5000);
             if (broadcastButton == null) {
-                Log.i(LOG_TAG, "Broadcast button not found");
+                Log.i(LOG_TAG, "FAILED: Broadcast button not found");
                 return false;
             }
 
@@ -90,7 +84,7 @@ public class TwitchStreamTest extends Benchmark {
                                 By.clazz("android.widget.Button").text("End Stream")),
                         5000);
                 if (endStreamButton == null) {
-                    Log.i(LOG_TAG, "End stream button not found");
+                    Log.i(LOG_TAG, "FAILED: End stream button not found");
                     return false;
                 }
 
@@ -105,7 +99,7 @@ public class TwitchStreamTest extends Benchmark {
             Thread.sleep(2000);
             found = device.wait(Until.hasObject(By.text("LIVE")), 8000);
             if (!found) {
-                Log.i(LOG_TAG, "Stream not live");
+                Log.i(LOG_TAG, "FAILED: Stream not live");
                 return false;
             }
 
@@ -120,7 +114,7 @@ public class TwitchStreamTest extends Benchmark {
                             By.clazz("android.widget.Button").text("End Stream")),
                     5000);
             if (endStreamButton == null) {
-                Log.i(LOG_TAG, "End stream button not found");
+                Log.i(LOG_TAG, "FAILED: End stream button not found");
                 return false;
             }
 
@@ -129,27 +123,10 @@ public class TwitchStreamTest extends Benchmark {
 
             device.pressBack();
             device.waitForIdle();
-            device.pressBack();
-            device.waitForIdle();
 
-            // XXX: Annoyingly, it seems like the Pixel 4a (5G) requires 4 backs to get to the
-            // main page, while the Pixel 7 Pro requires only 3 backs
-            found = device.wait(Until.hasObject(By.text("Watch")), 500);
+            found = device.wait(Until.hasObject(By.res(PLAYING_OVERLAY)), 8000);
             if (!found) {
-                device.pressBack();
-                device.waitForIdle();
-                found = device.wait(Until.hasObject(By.text("Watch")), 6000);
-                if (!found) {
-                    Log.i(LOG_TAG, "Timed out going back to create page");
-                    return false;
-                }
-            }
-
-            device.pressBack();
-            device.waitForIdle();
-            found = device.wait(Until.hasObject(By.text("Channels Recommended For You")), 8000);
-            if (!found) {
-                Log.i(LOG_TAG, "Timed out going back to main page");
+                Log.i(LOG_TAG, "FAILED: Timed out going back to main page");
                 return false;
             }
 
