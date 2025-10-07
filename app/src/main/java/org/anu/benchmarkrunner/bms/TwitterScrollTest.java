@@ -35,6 +35,7 @@ public class TwitterScrollTest extends Benchmark {
     static String ACTIVITY_NAME = "com.twitter.android.StartActivity";
     static String EMPTY_HOME = "com.twitter.android:id/empty_title";
     static String HOME_BUTTON = "Home(. New items)?";
+    static String LIST_VIEW = "android:id/list";
     static String MUTE_BUTTON = "com.twitter.android:id/audio_toggle_view";
     static String NAVIGATION_BUTTON = "Show navigation drawer";
     static String POST = "com.twitter.android:id/row";
@@ -48,15 +49,15 @@ public class TwitterScrollTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.res(EMPTY_HOME)), 6000);
+            boolean found = device.wait(Until.hasObject(By.res(LIST_VIEW)), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
             UiObject2 navigationButton = device.wait(Until.findObject(By.desc(NAVIGATION_BUTTON)), 5000);
             if (navigationButton == null) {
-                Log.i(LOG_TAG, "Navigation button not found");
+                Log.i(LOG_TAG, "FAILED: Navigation button not found");
                 return false;
             }
             navigationButton.click();
@@ -66,7 +67,7 @@ public class TwitterScrollTest extends Benchmark {
             // a resource id. Hence add the extra requirement of an empty resource id.
             navigationButton = device.wait(Until.findObject(By.text("Following").res("")), 5000);
             if (navigationButton == null) {
-                Log.i(LOG_TAG, "Following button not found");
+                Log.i(LOG_TAG, "FAILED: Following button not found");
                 return false;
             }
             navigationButton.click();
@@ -74,7 +75,7 @@ public class TwitterScrollTest extends Benchmark {
 
             navigationButton = device.wait(Until.findObject(By.text("@DreamPhil97")), 5000);
             if (navigationButton == null) {
-                Log.i(LOG_TAG, "Followed users not found");
+                Log.i(LOG_TAG, "FAILED: Followed users not found");
                 return false;
             }
             navigationButton.click();
@@ -82,7 +83,7 @@ public class TwitterScrollTest extends Benchmark {
 
             found = device.wait(Until.hasObject(By.res(POST)), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "User page did not load in time");
+                Log.i(LOG_TAG, "FAILED: User page did not load in time");
                 return false;
             }
 
@@ -117,7 +118,7 @@ public class TwitterScrollTest extends Benchmark {
     boolean scrollPost() throws InterruptedException {
         List<UiObject2> posts = device.wait(Until.findObjects(By.res(POST)), 6000);
         if (posts == null || posts.isEmpty()) {
-            Log.i(LOG_TAG, "Posts not found");
+            Log.i(LOG_TAG, "FAILED: Posts not found");
             return false;
         }
 
@@ -140,7 +141,7 @@ public class TwitterScrollTest extends Benchmark {
 
         found = device.hasObject(By.res(POST));
         if (!found) {
-            Log.i(LOG_TAG, "Could not find post after scrolling");
+            Log.i(LOG_TAG, "FAILED: Could not find post after scrolling");
             return false;
         }
 
