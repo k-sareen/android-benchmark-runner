@@ -86,15 +86,6 @@ public abstract class Benchmark {
         this.tasksetMask = tasksetMask;
         this.tasksetWaitTime = tasksetWaitTime;
 
-        String pidString = device.executeShellCommand("pidof " + benchmark);
-        int prevPid = pidString.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(pidString.trim());
-
-        if (prevPid > 0) {
-            device.executeShellCommand("kill -s KILL " + prevPid);
-            Thread.sleep(250);
-            Log.i(LOG_TAG, "Killed previous pid " + prevPid + " for benchmark " + benchmark);
-        }
-
         setupIteration();
         harnessBegin();
 
@@ -111,15 +102,6 @@ public abstract class Benchmark {
     public final void runWithAdversaries(Adversary[] adversaries, String tasksetMask, int tasksetWaitTime) throws Exception {
         this.tasksetMask = tasksetMask;
         this.tasksetWaitTime = tasksetWaitTime;
-
-        String pidString = device.executeShellCommand("pidof " + benchmark);
-        int prevPid = pidString.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(pidString.trim());
-
-        if (prevPid > 0) {
-            device.executeShellCommand("kill -s KILL " + prevPid);
-            Thread.sleep(250);
-            Log.i(LOG_TAG, "Killed previous pid " + prevPid + " for benchmark " + benchmark);
-        }
 
         for (Adversary adv: adversaries) {
             // Run the adversary
@@ -160,7 +142,8 @@ public abstract class Benchmark {
             // end up interfering too much with the application otherwise. Ideally we can schedule
             // it onto the unused cores, but for the time being, we are letting the OS decide
             // where to schedule it.
-            device.executeShellCommand("am start -n " + benchmark + "/" + activityName);
+            // `-S` is used to stop any previous instances of the benchmark
+            device.executeShellCommand("am start -S -n " + benchmark + "/" + activityName);
             Thread.sleep(500);
 
             if (pid < 0) {
