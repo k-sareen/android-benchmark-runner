@@ -18,6 +18,7 @@ package org.anu.benchmarkrunner.bms;
 
 import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
 
+import android.graphics.Point;
 import android.util.Log;
 
 import androidx.test.uiautomator.By;
@@ -42,29 +43,32 @@ public class GoogleNewsScrollTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.res(MAIN_PAGE_HEADER)), 6000);
+            boolean found = device.wait(Until.hasObject(By.text("Top stories")), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
-            UiObject2 headlines = device.wait(Until.findObject(By.res(HEADLINES_TAB)), 6000);
+            UiObject2 headlines = device.wait(Until.findObject(By.text("Headlines")), 6000);
             if (headlines == null) {
-                Log.i(LOG_TAG, "Could not find headlines tab");
+                Log.i(LOG_TAG, "FAILED: Could not find headlines tab");
                 return false;
             }
 
-            headlines.click();
+            Point headlinesCentre = headlines.getVisibleCenter();
+            device.swipe(headlinesCentre.x, headlinesCentre.y,
+                    10, headlinesCentre.y, 20);
             device.waitForIdle();
-            found = device.wait(Until.hasObject(By.res(NEWS_IMAGE)), 6000);
+            Thread.sleep(500);
+            found = device.wait(Until.hasObject(By.descContains("More options")), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Could not find headlines");
+                Log.i(LOG_TAG, "FAILED: Could not find headlines");
                 return false;
             }
 
-            headlines = device.wait(Until.findObject(By.desc("World")), 6000);
+            headlines = device.wait(Until.findObject(By.text("World")), 6000);
             if (headlines == null) {
-                Log.i(LOG_TAG, "Could not find world headlines tab");
+                Log.i(LOG_TAG, "FAILED: Could not find world headlines tab");
                 return false;
             }
 
@@ -73,30 +77,31 @@ public class GoogleNewsScrollTest extends Benchmark {
             device.waitForIdle();
             headlines.click();
             device.waitForIdle();
-            headlines.click();
-            device.waitForIdle();
 
-            found = device.wait(Until.hasObject(By.res(NEWS_IMAGE)), 6000);
+            found = device.wait(Until.hasObject(By.descContains("More options")), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Could not find world headlines");
+                Log.i(LOG_TAG, "FAILED: Could not find world headlines");
                 return false;
             }
+            device.waitForIdle();
+            device.waitForIdle();
+            Thread.sleep(500);
 
             for (int i = 0; i < 10; i++) {
                 device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
                         deviceWidth / 2, 30 * deviceHeight / 100, 20);
                 device.waitForIdle();
-                Thread.sleep(500);
-                found = device.wait(Until.hasObject(By.res(NEWS_IMAGE)), 500);
+                Thread.sleep(1500);
+                found = device.wait(Until.hasObject(By.descContains("More options")), 500);
                 if (!found) {
-                    Log.i(LOG_TAG, "Could not find news articles");
+                    Log.i(LOG_TAG, "FAILED: Could not find news articles");
                     return false;
                 }
             }
 
-            found = device.wait(Until.hasObject(By.res(NEWS_IMAGE)), 500);
+            found = device.wait(Until.hasObject(By.descContains("More options")), 500);
             if (!found) {
-                Log.i(LOG_TAG, "Did not finish benchmark with news articles visible");
+                Log.i(LOG_TAG, "FAILED: Did not finish benchmark with news articles visible");
                 return false;
             }
 
