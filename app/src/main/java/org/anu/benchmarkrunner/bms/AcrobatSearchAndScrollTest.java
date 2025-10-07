@@ -53,9 +53,9 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            UiObject2 filesButton = device.wait(Until.findObject(By.res(FILES_BUTTON)), 2000);
+            UiObject2 filesButton = device.wait(Until.findObject(By.descContains("Files")), 2000);
             if (filesButton == null) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
@@ -64,7 +64,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             filesButton = device.wait(Until.findObject(By.text("On this device")), 2000);
             if (filesButton == null) {
-                Log.i(LOG_TAG, "Could not find file selection button");
+                Log.i(LOG_TAG, "FAILED: Could not find file selection button");
                 return false;
             }
 
@@ -74,21 +74,21 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             UiObject2 pdfResult = device.wait(Until.findObject(By.text("SICP")), 2000);
             if (pdfResult == null) {
-                Log.i(LOG_TAG, "Could not find PDF");
+                Log.i(LOG_TAG, "FAILED: Could not find PDF");
                 return false;
             }
             pdfResult.click();
 
             boolean found = device.wait(Until.hasObject(By.res(BOTTOM_TOOL_BAR)), 5000);
             if (!found) {
-                Log.i(LOG_TAG, "PDF did not load in time");
+                Log.i(LOG_TAG, "FAILED: PDF did not load in time");
                 return false;
             }
             Thread.sleep(500);
 
             UiObject2 contextMenu = device.wait(Until.findObject(By.res(CONTEXT_MENU)), 2000);
             if (contextMenu == null) {
-                Log.i(LOG_TAG, "Context menu button did not load in time");
+                Log.i(LOG_TAG, "FAILED: Context menu button did not load in time");
                 return false;
             }
             Thread.sleep(100);
@@ -97,7 +97,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             contextMenu = device.wait(Until.findObject(By.text("Bookmarks & Table of Contents")), 2000);
             if (contextMenu == null) {
-                Log.i(LOG_TAG, "Bookmarks button did not load in time");
+                Log.i(LOG_TAG, "FAILED: Bookmarks button did not load in time");
                 return false;
             }
             Thread.sleep(100);
@@ -106,7 +106,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             UiObject2 bookmark = device.wait(Until.findObject(By.text("Page 1")), 2000);
             if (bookmark == null) {
-                Log.i(LOG_TAG, "Bookmarks did not load in time");
+                Log.i(LOG_TAG, "FAILED: Bookmarks did not load in time");
                 return false;
             }
             Thread.sleep(100);
@@ -120,7 +120,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
             clickScrollBarAtPage(1);
             UiObject2 textBar = device.wait(Until.findObject(By.text("Enter page number")), 2000);
             if (textBar == null) {
-                Log.i(LOG_TAG, "Page selection text box did not load in time");
+                Log.i(LOG_TAG, "FAILED: Page selection text box did not load in time");
                 return false;
             }
             Thread.sleep(100);
@@ -129,11 +129,22 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
             Thread.sleep(100);
             simulateTyping("4");
             device.pressEnter();
-            Thread.sleep(500);
+            device.waitForIdle();
+            Thread.sleep(1000);
 
-            // XXX: Sigh. Annoyingly device.click() seems to just end up selecting text instead of
-            // actually clicking the link. So use the `input` command. This is a _really_ big hack.
-            device.executeShellCommand("input tap 310 1265");
+            clickScrollBarAtPage(4);
+            textBar = device.wait(Until.findObject(By.text("Enter page number")), 2000);
+            if (textBar == null) {
+                Log.i(LOG_TAG, "FAILED: Page selection text box did not load in time");
+                return false;
+            }
+            Thread.sleep(100);
+
+            textBar.click();
+            Thread.sleep(100);
+            simulateTyping("160");
+            device.pressEnter();
+            device.waitForIdle();
             Thread.sleep(1000);
 
             device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
@@ -145,7 +156,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             UiObject2 searchButton = device.wait(Until.findObject(By.res(SEARCH_TEXT_BUTTON)), 2000);
             if (searchButton == null) {
-                Log.i(LOG_TAG, "Could not find the search button");
+                Log.i(LOG_TAG, "FAILED: Could not find the search button");
                 return false;
             }
 
@@ -158,7 +169,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             found = device.wait(Until.gone(By.text("Tap to Cancel")), 12000);
             if (!found) {
-                Log.i(LOG_TAG, "Search did not complete in time");
+                Log.i(LOG_TAG, "FAILED: Search did not complete in time");
                 return false;
             }
             Thread.sleep(100);
@@ -177,7 +188,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
 
             found = device.wait(Until.hasObject(By.res(TOOLBAR_CONTAINER)), 2000);
             if (!found) {
-                Log.i(LOG_TAG, "Can't find toolbar container");
+                Log.i(LOG_TAG, "FAILED: Can't find toolbar container");
                 return false;
             }
 
@@ -188,9 +199,9 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
             device.pressBack();
             Thread.sleep(250);
 
-            found = device.wait(Until.hasObject(By.res(FILES_BUTTON)), 2000);
+            found = device.wait(Until.hasObject(By.descContains("Files")), 2000);
             if (!found) {
-                Log.i(LOG_TAG, "Timed out while going back to main page");
+                Log.i(LOG_TAG, "FAILED: Timed out while going back to main page");
                 return false;
             }
 
