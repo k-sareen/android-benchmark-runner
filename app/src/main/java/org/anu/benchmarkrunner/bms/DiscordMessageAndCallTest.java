@@ -44,7 +44,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
         try {
             UiObject2 chatBar = device.wait(Until.findObject(By.res(CHAT_BAR)), 6000);
             if (chatBar == null) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
@@ -64,13 +64,13 @@ public class DiscordMessageAndCallTest extends Benchmark {
 
             boolean found = device.wait(Until.hasObject(By.res(CHAT_BAR)), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Could not find chat bar");
+                Log.i(LOG_TAG, "FAILED: Could not find chat bar");
                 return false;
             }
 
             UiObject2 attach = device.wait(Until.findObject(By.desc("Toggle media keyboard")), 6000);
             if (attach == null) {
-                Log.i(LOG_TAG, "Could not find attach media button");
+                Log.i(LOG_TAG, "FAILED: Could not find attach media button");
                 return false;
             }
 
@@ -79,7 +79,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
 
             attach = device.wait(Until.findObject(By.desc("Photo")), 6000);
             if (attach == null) {
-                Log.i(LOG_TAG, "Could not find pictures");
+                Log.i(LOG_TAG, "FAILED: Could not find pictures");
                 return false;
             }
 
@@ -89,7 +89,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
 
             chatBar = device.wait(Until.findObject(By.res(CHAT_BAR)), 6000);
             if (chatBar == null) {
-                Log.i(LOG_TAG, "Could not find chat bar");
+                Log.i(LOG_TAG, "FAILED: Could not find chat bar");
                 return false;
             }
 
@@ -103,21 +103,21 @@ public class DiscordMessageAndCallTest extends Benchmark {
 
             found = device.wait(Until.hasObject(By.res(UPLOAD_PROGRESS)), 2000);
             if (!found) {
-                Log.i(LOG_TAG, "Could not find upload progress bar");
+                Log.i(LOG_TAG, "FAILED: Could not find upload progress bar");
                 return false;
             }
             device.waitForIdle();
 
             found = device.wait(Until.gone(By.res(UPLOAD_PROGRESS)), 8000);
             if (!found) {
-                Log.i(LOG_TAG, "Upload did not finish in timeout");
+                Log.i(LOG_TAG, "FAILED: Upload did not finish in timeout");
                 return false;
             }
             device.waitForIdle();
 
             UiObject2 message = device.wait(Until.findObject(By.text("Check this picture out!")), 6000);
             if (message == null) {
-                Log.i(LOG_TAG, "Could not find message");
+                Log.i(LOG_TAG, "FAILED: Could not find message");
                 return false;
             }
 
@@ -127,7 +127,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
             UiObject2 reaction = device.wait(
                     Until.findObject(By.desc("Add Reaction: thumbsup")), 8000);
             if (reaction == null) {
-                Log.i(LOG_TAG, "Could not find reaction");
+                Log.i(LOG_TAG, "FAILED: Could not find reaction");
                 return false;
             }
 
@@ -142,7 +142,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
             UiObject2 voice = device.wait(
                     Until.findObject(By.descContains("General (voice channel)")), 6000);
             if (voice == null) {
-                Log.i(LOG_TAG, "Could not find voice channels");
+                Log.i(LOG_TAG, "FAILED: Could not find voice channels");
                 return false;
             }
 
@@ -152,7 +152,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
             voice = device.wait(Until.findObject(
                     By.clazz("android.widget.Button").desc("Join Voice")), 6000);
             if (voice == null) {
-                Log.i(LOG_TAG, "Could not find join voice button");
+                Log.i(LOG_TAG, "FAILED: Could not find join voice button");
                 return false;
             }
 
@@ -172,7 +172,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
                 voice = device.wait(Until.findObject(
                         By.clazz("android.widget.Button").desc("Disconnect")), 6000);
                 if (voice == null) {
-                    Log.i(LOG_TAG, "Could not find disconnect button");
+                    Log.i(LOG_TAG, "FAILED: Could not find disconnect button");
                     return false;
                 }
             }
@@ -182,7 +182,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
 
             found = device.wait(Until.hasObject(By.desc("Text Channels")), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Did not return to home page");
+                Log.i(LOG_TAG, "FAILED: Did not return to home page");
                 return false;
             }
 
