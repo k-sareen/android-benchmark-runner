@@ -46,7 +46,7 @@ public class MapsRoutePreviewTest extends Benchmark {
         try {
             UiObject2 searchBar = device.wait(Until.findObject(By.res(SEARCH_BOX)), 6000);
             if (searchBar == null) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
@@ -61,7 +61,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             UiObject2 directionsButton = device.wait(Until.findObject(By.text("Directions")), 6000);
             if (directionsButton == null) {
-                Log.i(LOG_TAG, "Location page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Location page did not load in time");
                 return false;
             }
 
@@ -71,7 +71,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             UiObject2 swapButton = device.wait(Until.findObject(By.desc("Swap start and destination")), 6000);
             if (swapButton == null) {
-                Log.i(LOG_TAG, "Could not find swap start and destination button");
+                Log.i(LOG_TAG, "FAILED: Could not find swap start and destination button");
                 return false;
             }
 
@@ -80,7 +80,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             searchBar = device.wait(Until.findObject(By.text("Choose destination")), 6000);
             if (searchBar == null) {
-                Log.i(LOG_TAG, "Could not find destination search bar");
+                Log.i(LOG_TAG, "FAILED: Could not find destination search bar");
                 return false;
             }
 
@@ -93,16 +93,15 @@ public class MapsRoutePreviewTest extends Benchmark {
             device.waitForIdle();
             Thread.sleep(500);
 
-            boolean found = device.wait(
-                    Until.hasObject(By.desc("Preview driving navigation")), 6000);
+            boolean found = device.wait(Until.hasObject(By.desc("Preview")), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Could not find preview route button");
+                Log.i(LOG_TAG, "FAILED: Could not find preview route button");
                 return false;
             }
 
             UiObject2 menu = device.wait(Until.findObject(By.desc("Overflow menu")), 1000);
             if (menu == null) {
-                Log.i(LOG_TAG, "Could not find overflow menu");
+                Log.i(LOG_TAG, "FAILED: Could not find overflow menu");
                 return false;
             }
 
@@ -111,7 +110,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             menu = device.wait(Until.findObject(By.text("Set depart or arrive time")), 6000);
             if (menu == null) {
-                Log.i(LOG_TAG, "Could not find button to set time");
+                Log.i(LOG_TAG, "FAILED: Could not find button to set time");
                 return false;
             }
 
@@ -120,7 +119,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             UiObject2 timePicker = device.wait(Until.findObject(By.res(TIME_PICKER)), 6000);
             if (timePicker == null) {
-                Log.i(LOG_TAG, "Could not find button to set hour");
+                Log.i(LOG_TAG, "FAILED: Could not find button to set hour");
                 return false;
             }
 
@@ -132,7 +131,7 @@ public class MapsRoutePreviewTest extends Benchmark {
             try {
                 timePicker = device.wait(Until.findObjects(By.res(TIME_PICKER)), 6000).get(1);
                 if (timePicker == null) {
-                    Log.i(LOG_TAG, "Could not find button to set minutes");
+                    Log.i(LOG_TAG, "FAILED: Could not find button to set minutes");
                     return false;
                 }
 
@@ -142,13 +141,13 @@ public class MapsRoutePreviewTest extends Benchmark {
                 simulateTyping("00");
             } catch (Exception e) {
                 e.printStackTrace(writer);
-                Log.i(LOG_TAG, "Could not find button to set minutes");
+                Log.i(LOG_TAG, "FAILED: Could not find button to set minutes");
                 return false;
             }
 
             timePicker = device.wait(Until.findObject(By.text("Today")), 6000);
             if (timePicker == null) {
-                Log.i(LOG_TAG, "Could not find date button");
+                Log.i(LOG_TAG, "FAILED: Could not find date button");
                 return false;
             }
 
@@ -158,11 +157,12 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             timePicker = device.wait(Until.findObject(By.desc("Next month")), 6000);
             if (timePicker == null) {
-                Log.i(LOG_TAG, "Could not find next month button");
+                Log.i(LOG_TAG, "FAILED: Could not find next month button");
                 return false;
             }
 
-            for (int i = 0; i < 10; i++) {
+            // Use a date 6 months in the future
+            for (int i = 0; i < 6; i++) {
                 timePicker.click();
                 device.waitForIdle();
                 Thread.sleep(50);
@@ -170,7 +170,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             timePicker = device.wait(Until.findObject(By.text("1")), 6000);
             if (timePicker == null) {
-                Log.i(LOG_TAG, "Could not find 1st of month");
+                Log.i(LOG_TAG, "FAILED: Could not find 1st of month");
                 return false;
             }
 
@@ -180,7 +180,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             timePicker = device.wait(Until.findObject(By.text("OK")), 6000);
             if (timePicker == null) {
-                Log.i(LOG_TAG, "Could not find OK button");
+                Log.i(LOG_TAG, "FAILED: Could not find OK button");
                 return false;
             }
 
@@ -190,17 +190,16 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             timePicker = device.wait(Until.findObject(By.res(SET_TIME_BUTTON)), 6000);
             if (timePicker == null) {
-                Log.i(LOG_TAG, "Could not find set time button");
+                Log.i(LOG_TAG, "FAILED: Could not find set time button");
                 return false;
             }
 
             timePicker.click();
             device.waitForIdle();
 
-            UiObject2 previewButton = device.wait(
-                    Until.findObject(By.desc("Preview driving navigation")), 6000);
+            UiObject2 previewButton = device.wait(Until.findObject(By.desc("Preview")), 6000);
             if (previewButton == null) {
-                Log.i(LOG_TAG, "Could not find preview route button after setting time");
+                Log.i(LOG_TAG, "FAILED: Could not find preview route button after setting time");
                 return false;
             }
 
@@ -210,7 +209,7 @@ public class MapsRoutePreviewTest extends Benchmark {
             while (true) {
                 UiObject2 nextButton = device.wait(Until.findObject(NEXT_BUTTON_SELECTOR), 6000);
                 if (nextButton == null) {
-                    Log.i(LOG_TAG, "Could not find next button");
+                    Log.i(LOG_TAG, "FAILED: Could not find next button");
                     return false;
                 }
 
@@ -225,7 +224,7 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             found = device.wait(Until.hasObject(By.text("Eddy Ave")), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Did not finish navigation at destination");
+                Log.i(LOG_TAG, "FAILED: Did not finish navigation at destination");
                 return false;
             }
 
@@ -233,10 +232,9 @@ public class MapsRoutePreviewTest extends Benchmark {
 
             device.pressBack();
             device.waitForIdle();
-            found = device.wait(
-                    Until.hasObject(By.desc("Preview driving navigation")), 6000);
+            found = device.wait(Until.hasObject(By.desc("Preview")), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Did not return to route preview screen");
+                Log.i(LOG_TAG, "FAILED: Did not return to route preview screen");
                 return false;
             }
 
@@ -244,7 +242,7 @@ public class MapsRoutePreviewTest extends Benchmark {
             device.waitForIdle();
             found = device.wait(Until.hasObject(By.text("Directions")), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Did not return to location screen");
+                Log.i(LOG_TAG, "FAILED: Did not return to location screen");
                 return false;
             }
 
@@ -252,7 +250,7 @@ public class MapsRoutePreviewTest extends Benchmark {
             device.waitForIdle();
             found = device.wait(Until.hasObject(By.res(SEARCH_BOX)), 6000);
             if (!found) {
-                Log.i(LOG_TAG, "Did not return to home page");
+                Log.i(LOG_TAG, "FAILED: Did not return to home page");
                 return false;
             }
 
