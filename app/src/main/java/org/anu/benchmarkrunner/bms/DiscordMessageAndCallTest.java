@@ -114,6 +114,9 @@ public class DiscordMessageAndCallTest extends Benchmark {
                 return false;
             }
             device.waitForIdle();
+            // XXX(kunals): Sometimes the message has not been sent even though the upload progress
+            // bar has disappeared. Wait for 1s before attempting to react to the message.
+            Thread.sleep(1000);
 
             UiObject2 message = device.wait(Until.findObject(By.text("Check this picture out!")), 6000);
             if (message == null) {
