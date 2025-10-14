@@ -32,6 +32,7 @@ public class DiscordMessageAndCallTest extends Benchmark {
     static String PACKAGE_NAME = "com.discord";
     static String ACTIVITY_NAME = "com.discord.main.MainDefault";
     static String CHAT_BAR = "com.discord:id/chat_input_edit_text";
+    static String IMAGE_CONTAINER = "com.discord:id/container";
     static String POST_ACCESSORIES = "com.discord:id/accessories_view";
     static String UPLOAD_PROGRESS = "com.discord:id/upload_progress";
 
@@ -114,9 +115,18 @@ public class DiscordMessageAndCallTest extends Benchmark {
                 return false;
             }
             device.waitForIdle();
+
             // XXX(kunals): Sometimes the message has not been sent even though the upload progress
-            // bar has disappeared. Wait for 1.5s before attempting to react to the message.
-            Thread.sleep(1500);
+            // bar has disappeared. Wait until the message object has refreshed before reacting.
+            found = device.wait(
+                    Until.gone(By.res(IMAGE_CONTAINER)
+                            .hasChild(By.clazz("android.view.ViewGroup")
+                                    .desc(""))), 4000);
+            if (!found) {
+                Log.i(LOG_TAG, "FAILED: Message did not send in timeout");
+                return false;
+            }
+            device.waitForIdle();
 
             UiObject2 message = device.wait(Until.findObject(By.text("Check this picture out!")), 6000);
             if (message == null) {
