@@ -306,7 +306,7 @@ public abstract class Benchmark {
                 // possible for an event to become stale before it is injected if it
                 // takes too long to inject the preceding ones.
                 instrumentation.sendKeySync(KeyEvent.changeTimeRepeat(event, SystemClock.uptimeMillis(), 0));
-                Thread.sleep(4);
+                Thread.sleep(10);
             }
         }
     }
