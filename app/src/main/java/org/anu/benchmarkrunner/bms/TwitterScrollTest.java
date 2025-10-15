@@ -35,10 +35,10 @@ public class TwitterScrollTest extends Benchmark {
     static String ACTIVITY_NAME = "com.twitter.android.StartActivity";
     static String EMPTY_HOME = "com.twitter.android:id/empty_title";
     static String HOME_BUTTON = "Home(. New items)?";
-    static String LIST_VIEW = "android:id/list";
     static String MUTE_BUTTON = "com.twitter.android:id/audio_toggle_view";
     static String NAVIGATION_BUTTON = "Show navigation drawer";
     static String POST = "com.twitter.android:id/row";
+    static String TIMELINE = "com.twitter.android:id/timeline_container";
 
     boolean muteButtonFound = false;
 
@@ -49,7 +49,7 @@ public class TwitterScrollTest extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.res(LIST_VIEW)), 6000);
+            boolean found = device.wait(Until.hasObject(By.res(TIMELINE)), 6000);
             if (!found) {
                 Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
