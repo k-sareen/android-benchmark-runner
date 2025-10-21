@@ -232,11 +232,7 @@ public abstract class Benchmark {
         if (tasksetMask != null) {
             // Hack to get benchmarks to taskset properly. If we don't wait here, benchmark threads
             // somehow ignore the taskset mask and get scheduled to cores not in the mask
-            int waitTime = Math.max(tasksetWaitTime, 1000);
-            // For some reason Gmail needs a longer wait time?
-            if (benchmark.equals("com.google.android.gm")) {
-                waitTime += 1000;
-            }
+            int waitTime = getWaitTime();
             Thread.sleep(waitTime);
             Log.i(LOG_TAG, "taskset mask " + tasksetMask + " specified. " +
                     "Running " + benchmark + " (PID " + pid + ") under taskset.");
@@ -248,6 +244,17 @@ public abstract class Benchmark {
         jankCollector.harnessBegin();
         Thread.sleep(300);
         writer.println("===== BenchmarkRunner " + benchmark + " starting =====");
+    }
+
+    private int getWaitTime() {
+        int waitTime = Math.max(tasksetWaitTime, 1000);
+        // For some reason Gmail needs a longer wait time?
+        if (benchmark.equals("com.google.android.gm")) {
+            waitTime += 1000;
+        }
+        // Maximum wait time is 8 seconds (arbitrarily chosen)
+        waitTime = Math.min(waitTime, 8000);
+        return waitTime;
     }
 
     public final void harnessEnd(long duration, boolean passed) throws Exception {
