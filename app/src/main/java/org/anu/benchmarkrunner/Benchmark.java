@@ -91,6 +91,7 @@ public abstract class Benchmark {
         setupIteration();
         setBenchmarkPid(false);
         if (hasError) {
+            teardownIteration();
             return;
         }
 
@@ -117,6 +118,7 @@ public abstract class Benchmark {
             adv.setBenchmarkPid(true);
 
             if (hasError) {
+                teardownIteration();
                 return;
             }
 
@@ -131,6 +133,7 @@ public abstract class Benchmark {
         setupIteration();
         setBenchmarkPid(false);
         if (hasError) {
+            teardownIteration();
             return;
         }
 
@@ -166,6 +169,8 @@ public abstract class Benchmark {
         // `-S` is used to stop any previous instances of the benchmark
         device.performActionAndWait(() -> {
             try {
+                device.pressHome();
+                device.waitForIdle();
                 device.executeShellCommand("am start -S -n " + benchmark + "/" + activityName);
             } catch (Throwable t) {
                 t.printStackTrace(writer);
@@ -175,6 +180,10 @@ public abstract class Benchmark {
     }
 
     public final void setBenchmarkPid(boolean adversary) {
+        if (hasError) {
+            return;
+        }
+
         try {
             if (pid < 0) {
                 String pidString = device.executeShellCommand("pidof " + benchmark);
