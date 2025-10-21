@@ -257,6 +257,24 @@ public abstract class Benchmark {
         return waitTime;
     }
 
+    public final void checkAffinity(String str) throws Exception {
+        if (tasksetMask != null) {
+            String getaffinityOut = device.executeShellCommand("taskset -p " + pid);
+            Matcher affinityMatcher = GETAFFINITY_MASK.matcher(getaffinityOut);
+
+            if (affinityMatcher.find()) {
+                String actualMask = affinityMatcher.group(1);
+                if (!tasksetMask.equals(actualMask)) {
+                    Log.e(LOG_TAG, "FAILED: " + str + " taskset mask " + tasksetMask + " was specified, but benchmark "
+                            + benchmark + " (PID " + pid + ") ran with " + actualMask + " mask! Not printing results!");
+                    writer.println("FAILED: " + str + " taskset mask " + tasksetMask + " was specified, but benchmark "
+                            + benchmark + " (PID " + pid + ") ran with " + actualMask + " mask! Not printing results!");
+                    throw new RuntimeException();
+                }
+            }
+        }
+    }
+
     public final void harnessEnd(long duration, boolean passed) throws Exception {
         assert pid > 1;
         device.executeShellCommand("kill -s USR2 " + pid);
