@@ -193,6 +193,8 @@ public abstract class Benchmark {
             assert pid > 1;
 
             if (!adversary) {
+                // Hack to allow us to create the file without permission errors
+                device.executeShellCommand("touch /data/local/bmpid");
                 try (FileWriter pidFile = new FileWriter("/data/local/bmpid")) {
                     pidFile.write("" + pid);
                     pidFile.flush();
@@ -208,6 +210,9 @@ public abstract class Benchmark {
 
     public final void stopBenchmark() {
         try {
+            device.executeShellCommand("rm /data/local/bmpid");
+            Thread.sleep(100);
+
             assert pid > 1;
             device.executeShellCommand("kill -s KILL " + pid);
             Thread.sleep(100);
