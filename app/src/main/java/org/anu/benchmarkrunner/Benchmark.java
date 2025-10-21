@@ -86,7 +86,13 @@ public abstract class Benchmark {
         this.tasksetMask = tasksetMask;
         this.tasksetWaitTime = tasksetWaitTime;
 
+        setupConfiguration();
         setupIteration();
+        setBenchmarkPid();
+        if (hasError) {
+            return;
+        }
+
         harnessBegin();
 
         Trace.beginSection("App Benchmark");
@@ -105,7 +111,14 @@ public abstract class Benchmark {
 
         for (Adversary adv: adversaries) {
             // Run the adversary
+            adv.setupConfiguration();
             adv.setupIteration();
+            adv.setBenchmarkPid();
+
+            if (hasError) {
+                return;
+            }
+
             adv.iterate();
             // Put the adversary in the background
             device.pressHome();
@@ -113,7 +126,13 @@ public abstract class Benchmark {
             Thread.sleep(250);
         }
 
+        setupConfiguration();
         setupIteration();
+        setBenchmarkPid();
+        if (hasError) {
+            return;
+        }
+
         harnessBegin();
 
         Trace.beginSection("App Benchmark");
@@ -130,22 +149,32 @@ public abstract class Benchmark {
         }
     }
 
+    public final void setupConfiguration() {
+        // Set the wait for idle and selector timeouts to be 1s because it takes too
+        // long otherwise
+        Configurator configurator = Configurator.getInstance();
+        configurator.setWaitForIdleTimeout(1000);
+        configurator.setWaitForSelectorTimeout(1000);
+    }
+
     public void setupIteration() {
+        // Start benchmark application. We don't taskset the `am` command here since it will
+        // end up interfering too much with the application otherwise. Ideally we can schedule
+        // it onto the unused cores, but for the time being, we are letting the OS decide
+        // where to schedule it.
+        // `-S` is used to stop any previous instances of the benchmark
+        device.performActionAndWait(() -> {
+            try {
+                device.executeShellCommand("am start -S -n " + benchmark + "/" + activityName);
+            } catch (Throwable t) {
+                t.printStackTrace(writer);
+                hasError = true;
+            }
+        }, Until.newWindow(), 2000);
+    }
+
+    public final void setBenchmarkPid() {
         try {
-            // Set the wait for idle and selector timeouts to be 1s because it takes too
-            // long otherwise
-            Configurator configurator = Configurator.getInstance();
-            configurator.setWaitForIdleTimeout(1000);
-            configurator.setWaitForSelectorTimeout(1000);
-
-            // Start benchmark application. We don't taskset the `am` command here since it will
-            // end up interfering too much with the application otherwise. Ideally we can schedule
-            // it onto the unused cores, but for the time being, we are letting the OS decide
-            // where to schedule it.
-            // `-S` is used to stop any previous instances of the benchmark
-            device.executeShellCommand("am start -S -n " + benchmark + "/" + activityName);
-            Thread.sleep(500);
-
             if (pid < 0) {
                 String pidString = device.executeShellCommand("pidof " + benchmark);
                 pid = Integer.parseInt(pidString.trim());
