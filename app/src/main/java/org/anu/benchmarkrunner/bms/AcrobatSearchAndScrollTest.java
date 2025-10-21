@@ -161,10 +161,12 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
             }
 
             searchButton.click();
+            device.waitForIdle();
             Thread.sleep(500);
 
             simulateTyping("Garbage Collection");
             device.pressEnter();
+            device.waitForIdle();
             Thread.sleep(1000);
 
             found = device.wait(Until.gone(By.text("Tap to Cancel")), 12000);
@@ -174,7 +176,7 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
             }
             Thread.sleep(100);
             device.pressBack();
-            Thread.sleep(500);
+            device.waitForIdle();
 
             device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
                     deviceWidth / 2, 30 * deviceHeight / 100, 25);
@@ -191,13 +193,14 @@ public class AcrobatSearchAndScrollTest extends Benchmark {
                 Log.i(LOG_TAG, "FAILED: Can't find toolbar container");
                 return false;
             }
+            device.waitForIdle();
 
             device.pressBack();
-            Thread.sleep(250);
+            device.waitForIdle();
             device.pressBack();
-            Thread.sleep(250);
+            device.waitForIdle();
             device.pressBack();
-            Thread.sleep(250);
+            device.waitForIdle();
 
             found = device.wait(Until.hasObject(By.descContains("Files")), 2000);
             if (!found) {
