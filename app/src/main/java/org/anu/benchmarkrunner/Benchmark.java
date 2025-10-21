@@ -31,6 +31,7 @@ import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
+import java.io.FileWriter;
 import java.io.PrintStream;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -88,7 +89,7 @@ public abstract class Benchmark {
 
         setupConfiguration();
         setupIteration();
-        setBenchmarkPid();
+        setBenchmarkPid(false);
         if (hasError) {
             return;
         }
@@ -113,7 +114,7 @@ public abstract class Benchmark {
             // Run the adversary
             adv.setupConfiguration();
             adv.setupIteration();
-            adv.setBenchmarkPid();
+            adv.setBenchmarkPid(true);
 
             if (hasError) {
                 return;
@@ -128,7 +129,7 @@ public abstract class Benchmark {
 
         setupConfiguration();
         setupIteration();
-        setBenchmarkPid();
+        setBenchmarkPid(false);
         if (hasError) {
             return;
         }
@@ -173,7 +174,7 @@ public abstract class Benchmark {
         }, Until.newWindow(), 2000);
     }
 
-    public final void setBenchmarkPid() {
+    public final void setBenchmarkPid(boolean adversary) {
         try {
             if (pid < 0) {
                 String pidString = device.executeShellCommand("pidof " + benchmark);
@@ -181,6 +182,13 @@ public abstract class Benchmark {
             }
 
             assert pid > 1;
+
+            if (!adversary) {
+                try (FileWriter pidFile = new FileWriter("/data/local/bmpid")) {
+                    pidFile.write("" + pid);
+                    pidFile.flush();
+                }
+            }
         } catch (Throwable t) {
             t.printStackTrace(writer);
             hasError = true;
