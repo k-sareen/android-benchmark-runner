@@ -37,7 +37,7 @@ public class lusearch extends Adversary {
     @Override
     public void setupIteration() {
         try {
-            String pidOut = device.executeShellCommand(LUSEARCH_ADVERSARY_PATH);
+            String pidOut = device.executeShellCommand(LUSEARCH_ADVERSARY_PATH).trim();
             device.waitForIdle();
 
             dalvikPid = Integer.parseInt(pidOut);
