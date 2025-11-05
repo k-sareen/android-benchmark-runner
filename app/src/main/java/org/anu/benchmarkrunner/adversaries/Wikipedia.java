@@ -1,0 +1,105 @@
+/*
+ * Copyright 2024 Kunal Sareen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.anu.benchmarkrunner.adversaries;
+
+import static org.anu.benchmarkrunner.BenchmarkRunner.LOG_TAG;
+
+import android.util.Log;
+
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
+
+import org.anu.benchmarkrunner.Benchmark;
+
+import java.io.PrintStream;
+
+public class Wikipedia extends Benchmark {
+    static String PACKAGE_NAME = "org.wikipedia";
+    static String ACTIVITY_NAME = "org.wikipedia.main.MainActivity";
+    static String ARTICLE_IMAGE = "org.wikipedia:id/view_page_header_image";
+    static String CLOSE_TAB_BUTTON = "org.wikipedia:id/close_tab_button";
+    static String FEATURED_ARTICLE_HEADER = "org.wikipedia:id/view_card_header_title";
+    static String PAGE_TOOLBAR_BUTTON_SEARCH = "org.wikipedia:id/page_toolbar_button_search";
+    static String SEARCH_CONTAINER = "org.wikipedia:id/search_container";
+    static String SEARCH_SRC_TEXT = "org.wikipedia:id/search_src_text";
+    static String TABS_BUTTON = "org.wikipedia:id/page_toolbar_button_tabs";
+
+    public Wikipedia(PrintStream writer) {
+        super(PACKAGE_NAME, ACTIVITY_NAME, writer);
+    }
+
+    @Override
+    public boolean iterate() {
+        try {
+            // Wait for the main page to render
+            boolean found = device.wait(Until.hasObject(By.res(FEATURED_ARTICLE_HEADER)), 2000);
+            if (!found) {
+                Log.i(LOG_TAG, "Main page did not load in time");
+                return false;
+            }
+
+            // Click on search bar
+            UiObject2 searchBar = device.findObject(By.res(SEARCH_CONTAINER));
+            searchBar.click();
+
+            // Enter search text
+            searchBar = device.findObject(By.res(SEARCH_SRC_TEXT));
+            searchBar.click();
+            // searchBar.setText("Canberra");
+            simulateTyping("Canberra");
+            device.pressEnter();
+
+            // Wait until search request is successful and then click on first link
+            found = device.wait(Until.hasObject(By.text("Capital city of Australia")), 2000);
+            if (!found) {
+                Log.i(LOG_TAG, "Cannot find first search result");
+                return false;
+            }
+            device.click(deviceWidth / 2, 400);
+
+            // Wait until webpage has loaded. Perform some scrolling actions
+            found = device.wait(Until.hasObject(By.res(ARTICLE_IMAGE)), 2000);
+            if (!found) {
+                Log.i(LOG_TAG, "FAILED: Cannot find first webpage");
+                return false;
+            }
+            Thread.sleep(500);
+
+            device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
+                    deviceWidth / 2, 30 * deviceHeight / 100, 30);
+            Thread.sleep(1000);
+            device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
+                    deviceWidth / 2, 30 * deviceHeight / 100, 30);
+            Thread.sleep(1000);
+            device.swipe(deviceWidth / 2, 40 * deviceHeight / 100,
+                    deviceWidth / 2, 60 * deviceHeight / 100, 25);
+            device.waitForIdle();
+
+            found = device.wait(Until.hasObject(By.res(TABS_BUTTON)), 2000);
+            if (!found) {
+                Log.i(LOG_TAG, "FAILED: Tabs button is not visible");
+                return false;
+            }
+
+            return true;
+        } catch (Throwable t) {
+            t.printStackTrace(writer);
+            return false;
+        }
+    }
+}
