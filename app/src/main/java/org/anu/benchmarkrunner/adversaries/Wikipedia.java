@@ -24,11 +24,11 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import org.anu.benchmarkrunner.Benchmark;
+import org.anu.benchmarkrunner.Adversary;
 
 import java.io.PrintStream;
 
-public class Wikipedia extends Benchmark {
+public class Wikipedia extends Adversary {
     static String PACKAGE_NAME = "org.wikipedia";
     static String ACTIVITY_NAME = "org.wikipedia.main.MainActivity";
     static String ARTICLE_IMAGE = "org.wikipedia:id/view_page_header_image";
