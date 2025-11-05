@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Kunal Sareen
+ * Copyright 2025 Kunal Sareen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,28 +49,31 @@ public class Wikipedia extends Adversary {
             // Wait for the main page to render
             boolean found = device.wait(Until.hasObject(By.res(FEATURED_ARTICLE_HEADER)), 2000);
             if (!found) {
-                Log.i(LOG_TAG, "Main page did not load in time");
+                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
             }
 
             // Click on search bar
             UiObject2 searchBar = device.findObject(By.res(SEARCH_CONTAINER));
             searchBar.click();
+            device.waitForIdle();
 
             // Enter search text
             searchBar = device.findObject(By.res(SEARCH_SRC_TEXT));
             searchBar.click();
-            // searchBar.setText("Canberra");
+            device.waitForIdle();
             simulateTyping("Canberra");
             device.pressEnter();
+            device.waitForIdle();
 
             // Wait until search request is successful and then click on first link
             found = device.wait(Until.hasObject(By.text("Capital city of Australia")), 2000);
             if (!found) {
-                Log.i(LOG_TAG, "Cannot find first search result");
+                Log.i(LOG_TAG, "FAILED: Cannot find first search result");
                 return false;
             }
             device.click(deviceWidth / 2, 400);
+            device.waitForIdle();
 
             // Wait until webpage has loaded. Perform some scrolling actions
             found = device.wait(Until.hasObject(By.res(ARTICLE_IMAGE)), 2000);
@@ -79,20 +82,31 @@ public class Wikipedia extends Adversary {
                 return false;
             }
             Thread.sleep(500);
-
-            device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
-                    deviceWidth / 2, 30 * deviceHeight / 100, 30);
-            Thread.sleep(1000);
-            device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
-                    deviceWidth / 2, 30 * deviceHeight / 100, 30);
-            Thread.sleep(1000);
-            device.swipe(deviceWidth / 2, 40 * deviceHeight / 100,
-                    deviceWidth / 2, 60 * deviceHeight / 100, 25);
             device.waitForIdle();
 
-            found = device.wait(Until.hasObject(By.res(TABS_BUTTON)), 2000);
+            device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
+                    deviceWidth / 2, 30 * deviceHeight / 100, 30);
+            Thread.sleep(1000);
+            device.waitForIdle();
+            device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
+                    deviceWidth / 2, 30 * deviceHeight / 100, 30);
+            Thread.sleep(1000);
+            device.waitForIdle();
+            device.swipe(deviceWidth / 2, 30 * deviceHeight / 100,
+                    deviceWidth / 2, 60 * deviceHeight / 100, 25);
+            Thread.sleep(1000);
+            device.waitForIdle();
+
+            device.pressBack();
+            device.waitForIdle();
+            device.pressBack();
+            device.waitForIdle();
+            device.pressBack();
+            device.waitForIdle();
+
+            found = device.wait(Until.hasObject(By.res(FEATURED_ARTICLE_HEADER)), 2000);
             if (!found) {
-                Log.i(LOG_TAG, "FAILED: Tabs button is not visible");
+                Log.i(LOG_TAG, "FAILED: Did not return to main page");
                 return false;
             }
 
