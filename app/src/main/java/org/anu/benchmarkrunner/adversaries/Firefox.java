@@ -43,7 +43,7 @@ public class Firefox extends Adversary {
         try {
             UiObject2 toolBar = device.wait(Until.findObject(By.res(TOOLBAR)), 4000);
             if (toolBar == null) {
-                Log.i(LOG_TAG, "Could not find toolbar in time");
+                Log.i(LOG_TAG, "FAILED: Could not find toolbar in time");
                 return false;
             }
 
@@ -72,7 +72,7 @@ public class Firefox extends Adversary {
 
             UiObject2 engineView = device.wait(Until.findObject(By.res(ENGINE_VIEW)), 4000);
             if (engineView == null) {
-                Log.i(LOG_TAG, "Could not find Firefox");
+                Log.i(LOG_TAG, "FAILED: Could not find Firefox");
                 return false;
             }
 

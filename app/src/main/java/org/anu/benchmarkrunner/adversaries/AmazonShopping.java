@@ -43,7 +43,7 @@ public class AmazonShopping extends Adversary {
         try {
             boolean found = device.wait(Until.hasObject(By.res(SEARCHBOX)), 8000);
             if (!found) {
-                Log.i(LOG_TAG, "Could not load main page in time");
+                Log.i(LOG_TAG, "FAILED: Could not load main page in time");
                 return false;
             }
 
@@ -58,7 +58,7 @@ public class AmazonShopping extends Adversary {
 
             found = device.wait(Until.hasObject(By.res(SEARCHBOX)), 4000);
             if (!found) {
-                Log.i(LOG_TAG, "Could not find main page in time");
+                Log.i(LOG_TAG, "FAILED: Could not find main page in time");
                 return false;
             }
 

@@ -42,7 +42,7 @@ public class Settings extends Adversary {
         try {
             UiObject2 homepage = device.wait(Until.findObject(By.res(HOMEPAGE_CONTAINER)), 3000);
             if (homepage == null) {
-                Log.i(LOG_TAG, "Could not find settings homepage");
+                Log.i(LOG_TAG, "FAILED: Could not find settings homepage");
                 return false;
             }
 
@@ -56,7 +56,7 @@ public class Settings extends Adversary {
 
             homepage = device.wait(Until.findObject(By.res(HOMEPAGE_CONTAINER)), 3000);
             if (homepage == null) {
-                Log.i(LOG_TAG, "Could not find settings");
+                Log.i(LOG_TAG, "FAILED: Could not find settings");
                 return false;
             }
 
