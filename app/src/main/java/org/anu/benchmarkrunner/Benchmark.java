@@ -50,7 +50,7 @@ public abstract class Benchmark {
     private String tasksetMask;
     private int tasksetWaitTime;
     private final JankCollector jankCollector;
-    private boolean hasError = false;
+    protected boolean hasError = false;
 
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
     private static final String ART_STATS_HEADER =
@@ -117,7 +117,7 @@ public abstract class Benchmark {
             adv.setupIteration();
             adv.setBenchmarkPid(true);
 
-            if (hasError) {
+            if (adv.hasError) {
                 teardownIteration();
                 return;
             }
