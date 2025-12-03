@@ -61,15 +61,8 @@ public class TikTokScrollTest extends Benchmark {
                 return false;
             }
 
-            device.swipe(deviceWidth / 2, 30 * deviceHeight / 100,
-                    deviceWidth / 2, 70 * deviceHeight / 100, 20);
-            Thread.sleep(1500);
-
-            found = device.wait(Until.hasObject(By.res(POST)), 8000);
-            if (!found) {
-                Log.i(LOG_TAG, "FAILED: Following tab did not reload in time");
-                return false;
-            }
+            device.waitForIdle();
+            device.waitForIdle();
 
             for (int i = 0; i < 12; i++) {
                 device.swipe(deviceWidth / 2, 70 * deviceHeight / 100,
