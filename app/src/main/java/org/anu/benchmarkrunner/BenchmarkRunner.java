@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
 public class BenchmarkRunner extends MonitoringInstrumentation {
@@ -51,8 +52,8 @@ public class BenchmarkRunner extends MonitoringInstrumentation {
 
         if (arguments.getString("adv") != null) {
             String[] tmp = arguments.getString("adv").split(",");
-            // Use a TreeMap to guarantee insertion order
-            TreeSet<String> tmpSet = new TreeSet<>(Arrays.asList(tmp));
+            // Use a LinkedHashSet to guarantee insertion order
+            LinkedHashSet<String> tmpSet = new LinkedHashSet<>(Arrays.asList(tmp));
 
             selectedAdversaries = new String[tmpSet.size()];
             selectedAdversaries = tmpSet.toArray(selectedAdversaries);
