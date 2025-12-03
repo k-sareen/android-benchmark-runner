@@ -41,7 +41,7 @@ public class Spotify extends Adversary {
     @Override
     public boolean iterate() {
         try {
-            UiObject2 search = device.wait(Until.findObject(By.descContains("Search,")), 2500);
+            UiObject2 search = device.wait(Until.findObject(By.descContains("Search,")), 5000);
             if (search == null) {
                 Log.i(LOG_TAG, "FAILED: Main page did not load in time");
                 return false;
@@ -50,7 +50,7 @@ public class Spotify extends Adversary {
             search.click();
             device.waitForIdle();
 
-            search = device.wait(Until.findObject(By.res(FIND_SEARCH_FIELD)), 2500);
+            search = device.wait(Until.findObject(By.res(FIND_SEARCH_FIELD)), 5000);
             if (search == null) {
                 Log.i(LOG_TAG, "FAILED: Search page did not load in time");
                 return false;
@@ -62,7 +62,7 @@ public class Spotify extends Adversary {
             device.waitForIdle();
 
             UiObject2 result = device.wait(Until.findObject(
-                    By.res(TRACK_TITLE).text("Paranoid Android")), 2500);
+                    By.res(TRACK_TITLE).text("Paranoid Android")), 5000);
             if (result == null) {
                 Log.i(LOG_TAG, "FAILED: Search did not complete in time");
                 return false;
