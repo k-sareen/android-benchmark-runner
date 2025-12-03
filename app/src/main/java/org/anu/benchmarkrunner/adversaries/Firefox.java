@@ -55,7 +55,7 @@ public class Firefox extends Adversary {
             device.pressEnter();
             device.waitForIdle();
 
-            UiObject2 results = device.wait(Until.findObject(By.text("Earthsea - Wikipedia")), 3000);
+            UiObject2 results = device.wait(Until.findObject(By.text("Earthsea - Wikipedia")), 8000);
             if (results == null) {
                 Log.i(LOG_TAG, "Could not load search results in time");
                 return false;
