@@ -57,11 +57,9 @@ public class Wikipedia extends Adversary {
             UiObject2 searchBar = device.findObject(By.res(SEARCH_CONTAINER));
             searchBar.click();
             device.waitForIdle();
+            device.waitForIdle();
 
             // Enter search text
-            searchBar = device.findObject(By.res(SEARCH_SRC_TEXT));
-            searchBar.click();
-            device.waitForIdle();
             simulateTyping("Canberra");
             device.pressEnter();
             device.waitForIdle();
