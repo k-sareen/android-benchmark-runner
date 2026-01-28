@@ -29,7 +29,7 @@ public class GoogleNewsSetup extends Benchmark {
                 return false;
             }
 
-            Thread.sleep(1000);
+            Thread.sleep(4000);
 
             found = this.denyNotificationPermissions();
             if (!found) {

@@ -24,7 +24,7 @@ public class TwitterSetup extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            Thread.sleep(6000);
+            Thread.sleep(8000);
             boolean found = this.denyNotificationPermissions();
             if (!found) {
                 Log.i(LOG_TAG, "FAILED: Could not deny notification permission");
