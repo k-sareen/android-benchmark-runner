@@ -23,15 +23,8 @@ public class GoogleNewsSetup extends Benchmark {
     @Override
     public boolean iterate() {
         try {
-            boolean found = device.wait(Until.hasObject(By.pkg(PACKAGE_NAME)), 8000);
-            if (!found) {
-                Log.i(LOG_TAG, "FAILED: Main page did not load in time");
-                return false;
-            }
-
-            Thread.sleep(4000);
-
-            found = this.denyNotificationPermissions();
+            Thread.sleep(10000);
+            boolean found = this.denyNotificationPermissions();
             if (!found) {
                 Log.i(LOG_TAG, "FAILED: Could not deny notification permission");
                 return false;
