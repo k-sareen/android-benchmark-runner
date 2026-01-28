@@ -29,6 +29,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import java.io.FileWriter;
@@ -52,6 +53,7 @@ public abstract class Benchmark {
     private final JankCollector jankCollector;
     protected boolean hasError = false;
 
+    static String PERMISSION_DIALOG = "com.android.permissioncontroller";
     public static String RECENT_APPS_SNAPSHOTS = "com.android.launcher3:id/snapshot";
     private static final String ART_STATS_HEADER =
             "============================ Tabulate Statistics ============================";
@@ -385,6 +387,25 @@ public abstract class Benchmark {
                 Thread.sleep(10);
             }
         }
+    }
+
+    public final boolean denyNotificationPermissions() {
+        UiObject2 permission = device.wait(Until.findObject(By.pkg(PERMISSION_DIALOG)), 2000);
+        if (permission == null) {
+            Log.i(LOG_TAG, "FAILED: Permission dialog not found");
+            return false;
+        }
+
+        permission = device.findObject(By.text("Don’t allow"));
+        if (permission == null) {
+            Log.i(LOG_TAG, "FAILED: Permission button not found");
+            return false;
+        }
+
+        permission.click();
+        device.waitForIdle();
+
+        return true;
     }
 
     public final String getLogTag() {
