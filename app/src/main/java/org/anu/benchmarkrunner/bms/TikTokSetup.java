@@ -30,10 +30,17 @@ public class TikTokSetup extends Benchmark {
                 return false;
             }
 
-            Thread.sleep(500);
+            Thread.sleep(6000);
+
+            found = device.wait(Until.hasObject(By.textContains("Use your sign-in for TikTok?")), 6000);
+            if (found) {
+                device.click(deviceWidth / 2, deviceHeight / 2);
+                device.waitForIdle();
+                Thread.sleep(1000);
+            }
 
             UiObject2 loginButton =
-                    device.wait(Until.findObject(By.textContains("Use phone / email / username")), 3000);
+                    device.wait(Until.findObject(By.textContains("Use phone / email / username")), 6000);
             if (loginButton == null) {
                 Log.i(LOG_TAG, "FAILED: Could not find login button");
                 return false;
@@ -42,7 +49,7 @@ public class TikTokSetup extends Benchmark {
             device.waitForIdle();
             Thread.sleep(500);
 
-            loginButton = device.wait(Until.findObject(By.textContains("Email / Username")), 2000);
+            loginButton = device.wait(Until.findObject(By.textContains("Email / Username")), 6000);
             if (loginButton == null) {
                 Log.i(LOG_TAG, "FAILED: Could not find email button");
                 return false;
@@ -59,7 +66,7 @@ public class TikTokSetup extends Benchmark {
             simulateTyping(username);
             Thread.sleep(500);
 
-            UiObject2 continueButton = device.wait(Until.findObject(By.textContains("Continue")), 1000);
+            UiObject2 continueButton = device.wait(Until.findObject(By.textContains("Continue")), 4000);
             if (continueButton == null) {
                 Log.i(LOG_TAG, "FAILED: Continue button couldn't be found");
                 return false;
@@ -67,7 +74,7 @@ public class TikTokSetup extends Benchmark {
 
             continueButton.click();
             device.waitForIdle();
-            Thread.sleep(1000);
+            Thread.sleep(4000);
 
             found = device.wait(Until.hasObject(By.textContains("Enter password")), 8000);
             if (!found) {
@@ -76,7 +83,7 @@ public class TikTokSetup extends Benchmark {
             }
 
             simulateTyping(password);
-            continueButton = device.wait(Until.findObject(By.textContains("Continue")), 1000);
+            continueButton = device.wait(Until.findObject(By.textContains("Continue")), 4000);
             if (continueButton == null) {
                 Log.i(LOG_TAG, "FAILED: Continue button couldn't be found");
                 return false;
