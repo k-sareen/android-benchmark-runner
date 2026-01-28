@@ -82,6 +82,8 @@ public class TikTokSetup extends Benchmark {
                 return false;
             }
 
+            Thread.sleep(2000);
+
             simulateTyping(password);
             continueButton = device.wait(Until.findObject(By.textContains("Continue")), 4000);
             if (continueButton == null) {
