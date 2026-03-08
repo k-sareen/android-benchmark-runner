@@ -33,6 +33,7 @@ public class GCBench2xTest extends Benchmark {
 
             for (int i = 0; i < 10; i++) {
                 gcbench.click();
+                Thread.sleep(1000);
                 device.waitForIdle();
 
                 String finishedText = "Finished GCBench 2x invocation " + (i + 1);
