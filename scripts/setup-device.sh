@@ -1,141 +1,52 @@
 #!/bin/bash
 
-device="$1"
+source $HOME/git/evaluation/scripts/common.sh
 
-SERIAL_NO=""
-PIXEL4A="08051JECB08812"
-PIXEL7PRO="28091FDH3009B7"
+adb_root
+disable_selinux
 
-case "${device}" in
-    "pixel4a")
-        SERIAL_NO=${PIXEL4A}
-        ;;
-    "pixel7pro")
-        SERIAL_NO=${PIXEL7PRO}
-        ;;
-    *)
-        echo "Unknown device. Please select one of pixel4a or pixel7pro"
-        exit 1
-        ;;
-esac
+disable_bg_dexopt_jobs
+suppress_ui_automator_logs
 
 governor="performance"
-
-export ANDROID_SERIAL=${SERIAL_NO}
-
-adb root
-adb shell setenforce 0
-
-policies=""
-if [[ "${device}" == "pixel4a" ]]; then
-    policies="0 6 7"
-    cpus="0 6 7"
-else
+if [[ "${device}" == "pixel7pro" ]]; then
     policies="0 4 6"
     cpus="0 1 2 3 4 5 6 7"
-fi
+    mem_frequency="3172000"
 
-# adb shell "echo 80 > /sys/devices/platform/soc/soc:google,charger/charge_stop_level"
-# adb shell "echo 100 > /sys/devices/platform/soc/soc:google,charger/charge_start_level"
+    # get_cpu_frequencies_and_governors "${policies}"
+    set_cpu_frequencies_and_governors "0=1401000 4=1999000 6=2401000" ${governor}
 
-for i in ${policies}; do
-    echo "=== Available frequencies for policy${i} ==="
-    adb shell cat "/sys/devices/system/cpu/cpufreq/policy${i}/scaling_available_frequencies"
-    echo "=== Current max frequency for policy${i} ==="
-    adb shell cat "/sys/devices/system/cpu/cpufreq/policy${i}/scaling_max_freq"
-    echo "=== Available governors for policy${i} ==="
-    adb shell cat "/sys/devices/system/cpu/cpufreq/policy${i}/scaling_available_governors"
-    echo "=== Current governor for policy${i} ==="
-    adb shell cat "/sys/devices/system/cpu/cpufreq/policy${i}/scaling_governor"
+    # pixel7pro_get_memory_frequencies_and_governors "${cpus}"
+    pixel7pro_set_memory_frequencies_and_governors "${cpus}" ${mem_frequency} ${governor}
 
-    if [[ "${device}" == "pixel4a" ]]; then
-        if [[ $i == 0 ]]; then
-            frequency="1516800"
-        elif [[ $i == 6 ]]; then
-            frequency="1900800"
-        elif [[ $i == 7 ]]; then
-            frequency="2188800"
-        fi
-    else
-        if [[ $i == 0 ]]; then
-            frequency="1401000"
-        elif [[ $i == 4 ]]; then
-            frequency="1999000"
-        elif [[ $i == 6 ]]; then
-            frequency="2401000"
-        fi
-    fi
+    pixel7pro_set_odpm_sampling_rate
+    pixel7pro_isolate_cores
+elif [[ "${device}" == "pixel6pro" ]]; then
+    policies="0 4 6"
+    cpus="0 1 2 3 4 5 6 7"
+    mem_frequency="3172000"
 
-    echo "=== Setting ${frequency} max frequency for policy${i} ==="
-    adb shell "echo ${frequency} > /sys/devices/system/cpu/cpufreq/policy${i}/scaling_max_freq"
-    echo "=== Setting ${governor} governor for policy${i} ==="
-    adb shell "echo ${governor} > /sys/devices/system/cpu/cpufreq/policy${i}/scaling_governor"
-done;
+    # get_cpu_frequencies_and_governors "${policies}"
+    set_cpu_frequencies_and_governors "0=1401000 4=1999000 6=2401000" ${governor}
 
-if [[ "${device}" == "pixel7pro" ]]; then
-    for i in ${cpus}; do
-        echo "=== Available frequencies for gs_memlat_devfreq cpu${i} ==="
-        adb shell cat "/sys/class/devfreq/gs_memlat_devfreq:devfreq_mif_cpu${i}_memlat@17000010/available_frequencies"
-        echo "=== Current max frequency for gs_memlat_devfreq cpu${i} ==="
-        adb shell cat "/sys/class/devfreq/gs_memlat_devfreq:devfreq_mif_cpu${i}_memlat@17000010/max_freq"
-        echo "=== Available governors for gs_memlat_devfreq cpu${i} ==="
-        adb shell cat "/sys/class/devfreq/gs_memlat_devfreq:devfreq_mif_cpu${i}_memlat@17000010/available_governors"
-        echo "=== Current governor for gs_memlat_devfreq cpu${i} ==="
-        adb shell cat "/sys/class/devfreq/gs_memlat_devfreq:devfreq_mif_cpu${i}_memlat@17000010/governor"
+    # pixel6pro_get_memory_frequencies_and_governors "${cpus}"
+    pixel6pro_set_memory_frequencies_and_governors "${cpus}" ${mem_frequency} ${governor}
 
-        frequency="3172000"
-        echo "=== Setting ${frequency} max frequency for gs_memlat_devfreq cpu${i} ==="
-        adb shell "echo ${frequency} > /sys/class/devfreq/gs_memlat_devfreq:devfreq_mif_cpu${i}_memlat@17000010/max_freq"
-        echo "=== Setting ${governor} governor for gs_memlat_devfreq cpu${i} ==="
-        adb shell "echo ${governor} > /sys/class/devfreq/gs_memlat_devfreq:devfreq_mif_cpu${i}_memlat@17000010/governor"
-    done;
-else
-    for i in ${cpus}; do
-        echo "=== Available frequencies for devfreq-l3 cpu${i} ==="
-        adb shell cat "/sys/class/devfreq/18321000.qcom,devfreq-l3:qcom,cpu${i}-cpu-l3-lat/available_frequencies"
-        echo "=== Current max frequency for devfreq-l3 cpu${i} ==="
-        adb shell cat "/sys/class/devfreq/18321000.qcom,devfreq-l3:qcom,cpu${i}-cpu-l3-lat/max_freq"
-        echo "=== Available governors for devfreq-l3 cpu${i} ==="
-        adb shell cat "/sys/class/devfreq/18321000.qcom,devfreq-l3:qcom,cpu${i}-cpu-l3-lat/available_governors"
-        echo "=== Current governor for devfreq-l3 cpu${i} ==="
-        adb shell cat "/sys/class/devfreq/18321000.qcom,devfreq-l3:qcom,cpu${i}-cpu-l3-lat/governor"
+    pixel6pro_set_odpm_sampling_rate
+    pixel6pro_isolate_cores
+elif [[ "${device}" == "pixel4a" ]]; then
+    policies="0 6 7"
+    cpus="0 6 7"
+    l3_frequency="1516800000"
+    llcc_frequency="16265"
+    ddr_frequency="7980"
 
-        frequency="1516800000"
-        echo "=== Setting ${frequency} max frequency for devfreq-l3 cpu${i} ==="
-        adb shell "echo ${frequency} > /sys/class/devfreq/18321000.qcom,devfreq-l3:qcom,cpu${i}-cpu-l3-lat/max_freq"
-        echo "=== Setting ${governor} governor for devfreq-l3 cpu${i} ==="
-        adb shell "echo ${governor} > /sys/class/devfreq/18321000.qcom,devfreq-l3:qcom,cpu${i}-cpu-l3-lat/governor"
+    # get_cpu_frequencies_and_governors "${policies}"
+    set_cpu_frequencies_and_governors "0=1516800 6=1900800 7=2188800" ${governor}
 
-        if [[ $i != 7 ]]; then
-            echo "=== Available frequencies for cpu-llcc-lat cpu${i} ==="
-            adb shell cat "/sys/class/devfreq/soc:qcom,cpu${i}-cpu-llcc-lat/available_frequencies"
-            echo "=== Current max frequency for cpu-llcc-lat cpu${i} ==="
-            adb shell cat "/sys/class/devfreq/soc:qcom,cpu${i}-cpu-llcc-lat/max_freq"
-            echo "=== Available governors for cpu-llcc-lat cpu${i} ==="
-            adb shell cat "/sys/class/devfreq/soc:qcom,cpu${i}-cpu-llcc-lat/available_governors"
-            echo "=== Current governor for cpu-llcc-lat cpu${i} ==="
-            adb shell cat "/sys/class/devfreq/soc:qcom,cpu${i}-cpu-llcc-lat/governor"
+    # pixel4a_get_memory_frequencies_and_governors "${cpus}"
+    pixel4a_set_memory_frequencies_and_governors "${cpus}" ${l3_frequency} ${llcc_frequency} ${ddr_frequency} ${governor}
 
-            frequency="14236"
-            echo "=== Setting ${frequency} max frequency for cpu-llcc-lat cpu${i} ==="
-            adb shell "echo ${frequency} > /sys/class/devfreq/soc:qcom,cpu${i}-cpu-llcc-lat/max_freq"
-            echo "=== Setting ${governor} governor for cpu-llcc-lat cpu${i} ==="
-            adb shell "echo ${governor} > /sys/class/devfreq/soc:qcom,cpu${i}-cpu-llcc-lat/governor"
-
-            echo "=== Available frequencies for llcc-ddr-lat cpu${i} ==="
-            adb shell cat "/sys/class/devfreq/soc:qcom,cpu${i}-llcc-ddr-lat/available_frequencies"
-            echo "=== Current max frequency for llcc-ddr-lat cpu${i} ==="
-            adb shell cat "/sys/class/devfreq/soc:qcom,cpu${i}-llcc-ddr-lat/max_freq"
-            echo "=== Available governors for llcc-ddr-lat cpu${i} ==="
-            adb shell cat "/sys/class/devfreq/soc:qcom,cpu${i}-llcc-ddr-lat/available_governors"
-            echo "=== Current governor for llcc-ddr-lat cpu${i} ==="
-            adb shell cat "/sys/class/devfreq/soc:qcom,cpu${i}-llcc-ddr-lat/governor"
-
-            frequency="7980"
-            echo "=== Setting ${frequency} max frequency for llcc-ddr-lat cpu${i} ==="
-            adb shell "echo ${frequency} > /sys/class/devfreq/soc:qcom,cpu${i}-llcc-ddr-lat/max_freq"
-            echo "=== Setting ${governor} governor for llcc-ddr-lat cpu${i} ==="
-            adb shell "echo ${governor} > /sys/class/devfreq/soc:qcom,cpu${i}-llcc-ddr-lat/governor"
-        fi
-    done;
+    pixel4a_isolate_cores
 fi
