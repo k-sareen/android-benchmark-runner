@@ -1,0 +1,200 @@
+<bundle>
+<long name="version" value="1" />
+<pbundle_as_map name="safety_labels">
+<pbundle_as_map name="data_labels">
+<pbundle_as_map name="data_collected">
+<pbundle_as_map name="storage">
+<pbundle_as_map name="files_docs">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="2">
+<item value="1" />
+<item value="2" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="app_performance">
+<pbundle_as_map name="performance_diagnostics">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="1">
+<item value="2" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="other">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="1">
+<item value="2" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="crash_logs">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="2">
+<item value="1" />
+<item value="2" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="contacts">
+<pbundle_as_map name="contacts">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="2">
+<item value="1" />
+<item value="6" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="audio">
+<pbundle_as_map name="sound_recordings">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="1">
+<item value="1" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="actions_in_app">
+<pbundle_as_map name="installed_apps">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="4">
+<item value="1" />
+<item value="2" />
+<item value="5" />
+<item value="6" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="user_generated_content">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="1">
+<item value="1" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="user_interaction">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="false" />
+<int-array name="purposes" num="3">
+<item value="2" />
+<item value="5" />
+<item value="6" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="in_app_search_history">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="1">
+<item value="1" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="personal">
+<pbundle_as_map name="email_address">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="3">
+<item value="1" />
+<item value="5" />
+<item value="7" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="phone_number">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="3">
+<item value="1" />
+<item value="4" />
+<item value="7" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="name">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="1">
+<item value="7" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="personal_identifiers">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="7">
+<item value="1" />
+<item value="2" />
+<item value="3" />
+<item value="5" />
+<item value="4" />
+<item value="6" />
+<item value="7" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="identifiers">
+<pbundle_as_map name="other">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="4">
+<item value="1" />
+<item value="2" />
+<item value="5" />
+<item value="6" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="photo_video">
+<pbundle_as_map name="photos">
+<boolean name="ephemeral" value="false" />
+<boolean name="is_collection_optional" value="true" />
+<int-array name="purposes" num="1">
+<item value="1" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="data_shared">
+<pbundle_as_map name="app_performance">
+<pbundle_as_map name="performance_diagnostics">
+<int-array name="purposes" num="1">
+<item value="2" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="other">
+<int-array name="purposes" num="1">
+<item value="2" />
+</int-array>
+</pbundle_as_map>
+<pbundle_as_map name="crash_logs">
+<int-array name="purposes" num="1">
+<item value="2" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="actions_in_app">
+<pbundle_as_map name="user_interaction">
+<int-array name="purposes" num="3">
+<item value="2" />
+<item value="5" />
+<item value="4" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+<pbundle_as_map name="identifiers">
+<pbundle_as_map name="other">
+<int-array name="purposes" num="3">
+<item value="2" />
+<item value="5" />
+<item value="4" />
+</int-array>
+</pbundle_as_map>
+</pbundle_as_map>
+</pbundle_as_map>
+</pbundle_as_map>
+<long name="version" value="1" />
+<pbundle_as_map name="security_labels">
+<boolean name="is_data_deletable" value="true" />
+<boolean name="is_data_encrypted" value="true" />
+</pbundle_as_map>
+</pbundle_as_map>
+</bundle>
