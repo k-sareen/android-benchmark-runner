@@ -1,0 +1,6 @@
+includes:
+  - "./lbo-apps-base.yml"
+
+configs:
+  - "art-mmtk-singlethread-ss-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big"
+  - "art-mmtk-singlethread-ss-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-mid"

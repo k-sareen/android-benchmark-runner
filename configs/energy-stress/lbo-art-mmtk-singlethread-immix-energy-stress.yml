@@ -1,0 +1,17 @@
+includes:
+  - "./lbo-apps-base.yml"
+
+overrides:
+   "suites.android-apps.minheap": art-default
+
+configs:
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-mid|stress_factor-524288"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-mid|stress_factor-1048576"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-mid|stress_factor-2097152"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-mid|stress_factor-4194304"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-mid|stress_factor-8388608"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-big|stress_factor-524288"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-big|stress_factor-1048576"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-big|stress_factor-2097152"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-big|stress_factor-4194304"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-big|stress_factor-8388608"

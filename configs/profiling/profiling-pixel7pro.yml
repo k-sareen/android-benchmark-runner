@@ -1,0 +1,61 @@
+includes:
+  - "$RUNNING_NG_PACKAGE_DATA/base/runbms.yml"
+
+suites:
+  android-apps:
+    apk: "org.anu.benchmarkrunner"
+    runner: ".BenchmarkRunner"
+    minheap: art-default
+    minheap_values:
+      art-default:
+        AcrobatSearchAndScrollTest: 256
+        AirBnBScrollAndClickTest: 256
+        BBCScrollAndClickTest: 256
+        DiscordMessageAndCallTest: 256
+        FacebookScrollTest: 256
+        GmailScrollAndClickTest: 256
+        GoogleNewsScrollTest: 256
+        InstagramScrollTest: 256
+        MapsRoutePreviewTest: 256
+        MediumScrollAndClickTest: 256
+        RedditScrollTest: 256
+        SpotifyListenAndSearchTest: 256
+        TikTokScrollTest: 256
+        TwitchStreamTest: 256
+        TwitterScrollTest: 256
+        WikipediaSearchAndScrollTest: 256
+    timeout: 300
+    type: AndroidApps
+
+overrides:
+  remote_host: null
+  invocations: 10
+  heap_range: 3
+  spread_factor: 3
+
+modifiers:
+  taskset:
+    type: Wrapper
+    val: "taskset -a c0"
+  app_taskset:
+    type: AppRunnerArg
+    val: "-e taskset c0"
+  taskset_wait_time:
+    type: AppRunnerArg
+    val: "-e tasksetWait {0}"
+
+runtimes:
+  default:
+    type: AndroidZygote
+    release: "default"
+
+benchmarks:
+  android-apps:
+    - AcrobatSearchAndScrollTest
+    - GoogleNewsScrollTest
+    - MapsRoutePreviewTest
+    - TikTokScrollTest
+    - TwitterScrollTest
+
+configs:
+  - "default|taskset|app_taskset|taskset_wait_time-1500"

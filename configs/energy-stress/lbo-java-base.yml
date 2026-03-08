@@ -1,0 +1,116 @@
+includes:
+  - "$RUNNING_NG_PACKAGE_DATA/base/runbms.yml"
+
+overrides:
+  remote_host: null
+  invocations: 10
+  heap_range: 3
+  spread_factor: 3
+  "suites.dacapo-android.timing_iteration": 3
+  "suites.dacapo-android.callback": "DacapoBachCallback"
+  "suites.dacapo-android.timeout": 180
+  "suites.dacapo-android.minheap_values.art-CC":
+        # Immix minheap
+        {gcbench: 13,
+         lusearch: 3,
+         pmd: 24,
+         xalan: 3}
+
+modifiers:
+  art_cc_thread_affinity:
+    type: SimpleFile
+    path: "/data/local/art-cc/data/local/mmtk_thread_affinity"
+    val: "{0}"
+  art_cmc_thread_affinity:
+    type: SimpleFile
+    path: "/data/local/art-cmc/data/local/mmtk_thread_affinity"
+    val: "{0}"
+  chroot_cc_only_gc_thread:
+    type: Wrapper
+    val: "chroot /data/local/art-cc env LD_PRELOAD=/apex/com.android.art/lib64/libart.so LD_LIBRARY_PATH=/apex/com.android.art/lib64"
+  chroot_cmc_only_gc_thread:
+    type: Wrapper
+    val: "chroot /data/local/art-cmc env LD_PRELOAD=/apex/com.android.art/lib64/libart.so LD_LIBRARY_PATH=/apex/com.android.art/lib64"
+  chroot_mmtk_multi:
+    type: Wrapper
+    val: "chroot /data/local/art-mmtk-dev env LD_PRELOAD=/apex/com.android.art/lib64/libart.so LD_LIBRARY_PATH=/apex/com.android.art/lib64"
+  chroot_mmtk_single:
+    type: Wrapper
+    val: "chroot /data/local/art-mmtk-fix env LD_PRELOAD=/apex/com.android.art/lib64/libart.so LD_LIBRARY_PATH=/apex/com.android.art/lib64"
+  ignore_max_footprint:
+    type: JVMArg
+    val: "-XX:IgnoreMaxFootprint"
+  probes:
+    type: JVMArg
+    val: "-Djava.library.path=/data/local/benchmarks/AndroidBachCallback"
+  use_jit:
+    type: JVMArg
+    val: "-Xusejit:true -Xcompiler-option --compiler-filter=speed"
+  bootclasspath:
+    type: JVMArg
+    val: "-Xbootclasspath:/apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/apex/com.android.i18n/javalib/core-icu4j.jar:/apex/com.android.conscrypt/javalib/conscrypt.jar"
+  use_tlab:
+    type: JVMArg
+    val: "-XX:UseTLAB"
+  no_jdwp_provider:
+    type: JVMArg
+    val: "-XjdwpProvider:none"
+  taskset:
+    type: Wrapper
+    val: "taskset -a {0}"
+  mmtk_plan:
+    type: EnvVar
+    var: "MMTK_PLAN"
+    val: "{0}"
+  mmtk_threads:
+    type: EnvVar
+    var: "MMTK_THREADS"
+    val: "{0}"
+  mmtk_thread_affinity:
+    type: EnvVar
+    var: "MMTK_THREAD_AFFINITY"
+    val: "AllInSet:{0}"
+  mmtk_precise_stress:
+    type: EnvVar
+    var: "MMTK_PRECISE_STRESS"
+    val: "{0}"
+  mmtk_stress_factor:
+    type: EnvVar
+    var: "MMTK_STRESS_FACTOR"
+    val: "{0}"
+  art_common:
+    type: ModifierSet
+    val: probes|use_jit|bootclasspath|use_tlab|no_jdwp_provider
+  heap_size:
+    type: JVMArg
+    val: "-Xms{0} -Xmx{0}"
+
+runtimes:
+  art-mmtk-multithreaded:
+    type: ARTDevice
+    release: "art-mmtk-multithreaded"
+    home: "/apex/com.android.art"
+    image: "/system/framework/art_boot_images/boot.art"
+  art-mmtk-singlethreaded:
+    type: ARTDevice
+    release: "art-mmtk-singlethreaded"
+    home: "/apex/com.android.art"
+    image: "/system/framework/art_boot_images/boot.art"
+  art-cc-only-gc-thread:
+    type: ARTDevice
+    release: "art-cc-only-gc-thread"
+    home: "/apex/com.android.art"
+    image: "/system/framework/art_boot_images/boot.art"
+  art-cmc-only-gc-thread:
+    type: ARTDevice
+    release: "art-cmc-only-gc-thread"
+    home: "/apex/com.android.art"
+    image: "/system/framework/art_boot_images/boot.art"
+
+benchmarks:
+  dacapo-android:
+   - gcbench
+   - lusearch
+   - pmd
+   - xalan
+

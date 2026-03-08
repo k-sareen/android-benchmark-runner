@@ -1,0 +1,20 @@
+includes:
+  - "./lbo-java-base.yml"
+
+modifiers:
+  compile_first_use:
+    type: JVMArg
+    val: "-Xjitthreshold:0"
+  mmtk_common:
+    type: ModifierSet
+    val: "art_common|ignore_max_footprint"
+  stress_factor:
+    type: ModifierSet
+    val: "heap_size-1740M|mmtk_precise_stress-false|mmtk_stress_factor-{0}"
+  ss_no_gc_in_harness:
+    type: EnvVar
+    var: "MMTK_SS_NO_GC_IN_HARNESS"
+    val: "{0}"
+
+configs:
+  - "art-mmtk-singlethreaded|mmtk_common|mmtk_thread_affinity-6,7|mmtk_threads-1|ss_no_gc_in_harness-true|mmtk_plan-SemiSpace|heap_size-1788M|chroot_mmtk_single|taskset-c0"

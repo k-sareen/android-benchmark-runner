@@ -1,0 +1,35 @@
+includes:
+  - "./lbo-java-base.yml"
+
+modifiers:
+  compile_first_use:
+    type: JVMArg
+    val: "-Xjitthreshold:0"
+  mmtk_common:
+    type: ModifierSet
+    val: "art_common|ignore_max_footprint"
+  stress_factor:
+    type: ModifierSet
+    val: "heap_size-1740M|mmtk_precise_stress-false|mmtk_stress_factor-{0}"
+  ss_no_gc_in_harness:
+    type: EnvVar
+    var: "MMTK_SS_NO_GC_IN_HARNESS"
+    val: "{0}"
+
+configs:
+  # NoGC build
+  # "art-mmtk-singlethreaded|mmtk_common|mmtk_thread_affinity-6,7|mmtk_threads-1|ss_no_gc_in_harness-true|mmtk_plan-SemiSpace|heap_size-1788M|chroot_mmtk_single|taskset-c0"
+
+  - "art-cc-only-gc-thread|art_common|art_gc-CC|chroot_cc_only_gc_thread|art_cc_thread_affinity-mid|taskset-c0"
+  - "art-cc-only-gc-thread|art_common|art_gc-CC|chroot_cc_only_gc_thread|art_cc_thread_affinity-big|taskset-c0"
+  - "art-cmc-only-gc-thread|art_common|art_gc-CMC|chroot_cmc_only_gc_thread|art_cmc_thread_affinity-mid|taskset-c0"
+  - "art-cmc-only-gc-thread|art_common|art_gc-CMC|chroot_cmc_only_gc_thread|art_cmc_thread_affinity-big|taskset-c0"
+
+  - "art-mmtk-singlethreaded|mmtk_common|mmtk_thread_affinity-4,5|mmtk_threads-1|mmtk_plan-SemiSpace|chroot_mmtk_single|taskset-c0"
+  - "art-mmtk-singlethreaded|mmtk_common|mmtk_thread_affinity-4,5|mmtk_threads-1|mmtk_plan-Immix|chroot_mmtk_single|taskset-c0"
+  - "art-mmtk-singlethreaded|mmtk_common|mmtk_thread_affinity-6,7|mmtk_threads-1|mmtk_plan-SemiSpace|chroot_mmtk_single|taskset-c0"
+  - "art-mmtk-singlethreaded|mmtk_common|mmtk_thread_affinity-6,7|mmtk_threads-1|mmtk_plan-Immix|chroot_mmtk_single|taskset-c0"
+  - "art-mmtk-multithreaded|mmtk_common|mmtk_thread_affinity-4,5|mmtk_threads-2|mmtk_plan-SemiSpace|chroot_mmtk_multi|taskset-c0"
+  - "art-mmtk-multithreaded|mmtk_common|mmtk_thread_affinity-4,5|mmtk_threads-2|mmtk_plan-Immix|chroot_mmtk_multi|taskset-c0"
+  - "art-mmtk-multithreaded|mmtk_common|mmtk_thread_affinity-6,7|mmtk_threads-2|mmtk_plan-SemiSpace|chroot_mmtk_multi|taskset-c0"
+  - "art-mmtk-multithreaded|mmtk_common|mmtk_thread_affinity-6,7|mmtk_threads-2|mmtk_plan-Immix|chroot_mmtk_multi|taskset-c0"

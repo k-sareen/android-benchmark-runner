@@ -1,0 +1,8 @@
+includes:
+  - "./lbo-apps-base.yml"
+
+overrides:
+   "suites.android-apps.minheap": art-nogc-1024
+
+configs:
+  - "art-mmtk-singlethread-nogc-energy|app_taskset-c0|taskset_wait_time-2000|mmtk_thread_affinity-big"

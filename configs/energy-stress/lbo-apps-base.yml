@@ -1,0 +1,143 @@
+includes:
+  - "$RUNNING_NG_PACKAGE_DATA/base/runbms.yml"
+
+suites:
+  android-apps:
+    apk: "org.anu.benchmarkrunner"
+    runner: ".BenchmarkRunner"
+    minheap: art-cmc
+    minheap_values:
+      art-default:
+        AcrobatSearchAndScrollTest: 256
+        AirBnBScrollAndClickTest: 256
+        BBCScrollAndClickTest: 256
+        DiscordMessageAndCallTest: 256
+        FacebookScrollTest: 256
+        GmailScrollAndClickTest: 256
+        GoogleNewsScrollTest: 256
+        InstagramScrollTest: 256
+        MapsRoutePreviewTest: 256
+        MediumScrollAndClickTest: 256
+        RedditScrollTest: 256
+        SpotifyListenAndSearchTest: 256
+        TikTokScrollTest: 256
+        TwitchStreamTest: 256
+        TwitterScrollTest: 256
+        WikipediaSearchAndScrollTest: 256
+        GCBench2xTest: 256
+        GCBench20xTest: 256
+      art-nogc-1024:
+        AcrobatSearchAndScrollTest: 1024
+        AirBnBScrollAndClickTest: 1024
+        BBCScrollAndClickTest: 1024
+        DiscordMessageAndCallTest: 1024
+        FacebookScrollTest: 1024
+        GmailScrollAndClickTest: 1024
+        GoogleNewsScrollTest: 1024
+        InstagramScrollTest: 1024
+        MapsRoutePreviewTest: 1024
+        MediumScrollAndClickTest: 1024
+        RedditScrollTest: 1024
+        SpotifyListenAndSearchTest: 1024
+        TikTokScrollTest: 1024
+        TwitchStreamTest: 1024
+        TwitterScrollTest: 1024
+        WikipediaSearchAndScrollTest: 1024
+        GCBench2xTest: 1024
+        GCBench20xTest: 1024
+      art-cc:
+        AcrobatSearchAndScrollTest: 24
+        # AirBnBScrollAndClickTest: 18
+        AirBnBScrollAndClickTest: 20
+        BBCScrollAndClickTest: 100
+        DiscordMessageAndCallTest: 20
+        FacebookScrollTest: 46
+        GmailScrollAndClickTest: 17
+        # GoogleNewsScrollTest: 16
+        GoogleNewsScrollTest: 18
+        InstagramScrollTest: 37
+        MapsRoutePreviewTest: 65
+        MediumScrollAndClickTest: 29
+        RedditScrollTest: 36
+        SpotifyListenAndSearchTest: 28
+        TikTokScrollTest: 65
+        TwitchStreamTest: 17
+        # TwitterScrollTest: 24
+        # TwitterScrollTest: 26
+        TwitterScrollTest: 28
+        WikipediaSearchAndScrollTest: 12
+      art-cmc:
+        # AcrobatSearchAndScrollTest: 27
+        AcrobatSearchAndScrollTest: 32
+        AirBnBScrollAndClickTest: 20
+        BBCScrollAndClickTest: 100
+        DiscordMessageAndCallTest: 35
+        FacebookScrollTest: 46
+        GmailScrollAndClickTest: 20
+        GoogleNewsScrollTest: 25
+        InstagramScrollTest: 46
+        # MapsRoutePreviewTest: 60
+        MapsRoutePreviewTest: 57
+        MediumScrollAndClickTest: 29
+        RedditScrollTest: 36
+        SpotifyListenAndSearchTest: 28
+        TikTokScrollTest: 82
+        TwitchStreamTest: 20
+        TwitterScrollTest: 42
+        WikipediaSearchAndScrollTest: 12
+        GCBench2xTest: 16
+        GCBench20xTest: 16
+    timeout: 300
+    type: AndroidApps
+
+overrides:
+  remote_host: null
+  invocations: 10
+  heap_range: 3
+  spread_factor: 3
+
+modifiers:
+  taskset:
+    type: Wrapper
+    val: "taskset -a {0}"
+  app_taskset:
+    type: AppRunnerArg
+    val: "-e taskset {0}"
+  taskset_wait_time:
+    type: AppRunnerArg
+    val: "-e tasksetWait {0}"
+  adversary:
+    type: AppRunnerArg
+    val: "-e adv {0}"
+  stress_factor:
+    type: SimpleFile
+    path: "/data/local/mmtk_stress_factor"
+    val: "{0}"
+  mmtk_thread_affinity:
+    type: SimpleFile
+    path: "/data/local/mmtk_thread_affinity"
+    val: "{0}"
+
+runtimes:
+  art-mmtk-singlethread-ss-energy:
+    type: AndroidZygote
+    release: "art-mmtk-singlethread-ss"
+  art-mmtk-singlethread-immix-energy:
+    type: AndroidZygote
+    release: "art-mmtk-singlethread-ix"
+  art-mmtk-multithread-ss-energy:
+    type: AndroidZygote
+    release: "art-mmtk-multithread-ss"
+  art-mmtk-multithread-immix-energy:
+    type: AndroidZygote
+    release: "art-mmtk-multithread-ix"
+  art-mmtk-singlethread-nogc-energy:
+    type: AndroidZygote
+    release: "art-mmtk-nogc"
+  art-cc-gc-thread-energy:
+    type: AndroidZygote
+    release: "art-cc-gc-thread-energy"
+  art-cmc-gc-thread-energy:
+    type: AndroidZygote
+    release: "art-cmc-gc-thread-energy"
+

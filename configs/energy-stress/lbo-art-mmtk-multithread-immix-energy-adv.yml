@@ -1,0 +1,12 @@
+includes:
+  - "./lbo-apps-base.yml"
+
+configs:
+  - "art-mmtk-multithread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big"
+  - "art-mmtk-multithread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping"
+  - "art-mmtk-multithread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,lusearch"
+  - "art-mmtk-multithread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,lusearch,Camera"
+  - "art-mmtk-multithread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,lusearch,Camera,Wikipedia"
+  - "art-mmtk-multithread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,lusearch,Camera,Wikipedia,Spotify"
+  - "art-mmtk-multithread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,lusearch,Camera,Wikipedia,Spotify,Firefox"
+  - "art-mmtk-multithread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,lusearch,Camera,Wikipedia,Spotify,Firefox,Settings"

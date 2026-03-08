@@ -1,0 +1,11 @@
+includes:
+  - "./lbo-apps-base.yml"
+
+configs:
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,Camera"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,Camera,Wikipedia"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,Camera,Wikipedia,Spotify"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,Camera,Wikipedia,Spotify,Firefox"
+  - "art-mmtk-singlethread-immix-energy|app_taskset-c0|taskset_wait_time-1500|mmtk_thread_affinity-big|adversary-AmazonShopping,Camera,Wikipedia,Spotify,Firefox,Settings"
